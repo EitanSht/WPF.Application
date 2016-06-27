@@ -1,0 +1,227 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <ResolveAssemblyReferenceIgnoreTargetFrameworkAttributeVersionMismatch>true</ResolveAssemblyReferenceIgnoreTargetFrameworkAttributeVersionMismatch>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{BFB6BB3C-4A87-4492-9127-2624A555B11E}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Wpf.ATP.Project</RootNamespace>
+    <AssemblyName>Wpf.ATP.Project</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="A4DLL, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\A4DLL.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="Model\IModel.cs" />
+    <Compile Include="Model\MyModel.cs" />
+    <Compile Include="Model\WinMaze.cs" />
+    <Compile Include="Presenter\ACommand.cs" />
+    <Compile Include="Presenter\CommandList\DirCommand.cs" />
+    <Compile Include="Presenter\CommandList\DisplayMazeCommand.cs" />
+    <Compile Include="Presenter\CommandList\DisplaySolutionCommand.cs" />
+    <Compile Include="Presenter\CommandList\ExitCommand.cs" />
+    <Compile Include="Presenter\CommandList\FileSizeCommand.cs" />
+    <Compile Include="Presenter\CommandList\Generate3dMazeCommand.cs" />
+    <Compile Include="Presenter\CommandList\InsertSolutionCommand.cs" />
+    <Compile Include="Presenter\CommandList\LoadMazeCommand.cs" />
+    <Compile Include="Presenter\CommandList\MazeSizeCommand.cs" />
+    <Compile Include="Presenter\CommandList\MoveBackCommand.cs" />
+    <Compile Include="Presenter\CommandList\MoveDownCommand.cs" />
+    <Compile Include="Presenter\CommandList\MoveForwardCommand.cs" />
+    <Compile Include="Presenter\CommandList\MoveLeftCommand.cs" />
+    <Compile Include="Presenter\CommandList\MoveRightCommand.cs" />
+    <Compile Include="Presenter\CommandList\MoveUpCommand.cs" />
+    <Compile Include="Presenter\CommandList\SaveMazeCommand.cs" />
+    <Compile Include="Presenter\CommandList\SolveMazeCommand.cs" />
+    <Compile Include="Presenter\ICommand.cs" />
+    <Compile Include="Presenter\MyPresenter.cs" />
+    <Compile Include="View\AboutWindow.xaml.cs">
+      <DependentUpon>AboutWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\FinishWindow.xaml.cs">
+      <DependentUpon>FinishWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\InstructionsWindow.xaml.cs">
+      <DependentUpon>InstructionsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\IView.cs" />
+    <Compile Include="View\MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\MazeBoard.xaml.cs">
+      <DependentUpon>MazeBoard.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\MazeCell.xaml.cs">
+      <DependentUpon>MazeCell.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\MazeWindow.xaml.cs">
+      <DependentUpon>MazeWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\PropertiesWindow.xaml.cs">
+      <DependentUpon>PropertiesWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\SolveChoiceWindow.xaml.cs">
+      <DependentUpon>SolveChoiceWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="View\AboutWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\FinishWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\InstructionsWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\MazeBoard.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\MazeCell.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\MazeWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\PropertiesWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\SolveChoiceWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Styles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Graphics\ArrowKeys.png" />
+    <Resource Include="Graphics\Cell.jpg" />
+    <Resource Include="Graphics\DGreen_Solid.jpg" />
+    <Resource Include="Graphics\Exit.png" />
+    <Resource Include="Graphics\Green_BG.jpg" />
+    <Resource Include="Graphics\Instructions.png" />
+    <Resource Include="Graphics\Load.png" />
+    <Resource Include="Graphics\New.png" />
+    <Resource Include="Graphics\PgDn.png" />
+    <Resource Include="Graphics\PgUp.png" />
+    <Resource Include="Graphics\Player.png" />
+    <Resource Include="Graphics\Properties.png" />
+    <Resource Include="Graphics\Save.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Graphics\Ctrl.png" />
+    <Resource Include="Graphics\Wheel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Graphics\Red.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Graphics\AboutGirl.png" />
+    <Resource Include="Graphics\AboutGuy.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Graphics\About.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Music\HeartBeat.mp3" />
+    <Content Include="Music\Rainbow6.mp3" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

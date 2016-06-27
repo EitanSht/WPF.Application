@@ -1,0 +1,48 @@
+﻿<UserControl x:Class="Wpf.ATP.Project.View.MazeCell"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             Name="userControl"
+             Width="20"
+             Height="{Binding ElementName=userControl,
+                              Path=Width}"
+             mc:Ignorable="d">
+    <Canvas Name="cellCanvas"  Background="Transparent">
+        <Line Name="lineLeftWall" Visibility="Hidden"
+              Style="{StaticResource MazeCellWall}"
+              X1="0"
+              X2="0"
+              Y1="0"
+              Y2="{Binding ElementName=userControl,
+                           Path=Width}" />
+        <Line Name="lineRightWall" Visibility="Hidden"
+              Style="{StaticResource MazeCellWall}"
+              X1="{Binding ElementName=userControl,
+                           Path=Width}"
+              X2="{Binding ElementName=userControl,
+                           Path=Width}"
+              Y1="0"
+              Y2="{Binding ElementName=userControl,
+                           Path=Width}" />
+        <Line Name="lineForwardWall" Visibility="Hidden"
+              Style="{StaticResource MazeCellWall}"
+              X1="0"
+              X2="{Binding ElementName=userControl,
+                           Path=Width}"
+              Y1="{Binding ElementName=userControl,
+                           Path=Width}"
+              Y2="{Binding ElementName=userControl,
+                           Path=Width}" />
+        <Line Name="lineBackWall" Visibility="Hidden"
+              Style="{StaticResource MazeCellWall}"
+              X1="0"
+              X2="{Binding ElementName=userControl,
+                           Path=Width}"
+              Y1="0"
+              Y2="0" />
+
+
+
+    </Canvas>
+</UserControl>

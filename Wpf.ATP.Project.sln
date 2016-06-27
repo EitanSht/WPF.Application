@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wpf.ATP.Project", "Wpf.ATP.Project.csproj", "{BFB6BB3C-4A87-4492-9127-2624A555B11E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestProject_3dMaze", "..\UnitTestProject_3dMaze\UnitTestProject_3dMaze.csproj", "{14D46EAD-9E62-4D56-A699-7137A48935AA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BFB6BB3C-4A87-4492-9127-2624A555B11E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFB6BB3C-4A87-4492-9127-2624A555B11E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFB6BB3C-4A87-4492-9127-2624A555B11E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFB6BB3C-4A87-4492-9127-2624A555B11E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14D46EAD-9E62-4D56-A699-7137A48935AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14D46EAD-9E62-4D56-A699-7137A48935AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14D46EAD-9E62-4D56-A699-7137A48935AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14D46EAD-9E62-4D56-A699-7137A48935AA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
