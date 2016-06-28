@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 using Wpf.ATP.Project.Model;
 using Wpf.ATP.Project.View;
 
@@ -12,7 +7,7 @@ namespace Wpf.ATP.Project.Presenter
     /// <summary>
     /// File Size - Returns the size of the file in bytes
     /// </summary>
-    class FileSizeCommand : ACommand
+    internal class FileSizeCommand : ACommand
     {
         /// <summary>
         /// FileSizeCommand command constructor

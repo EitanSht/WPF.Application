@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using Wpf.ATP.Project.Model;
+﻿using Wpf.ATP.Project.Model;
 using Wpf.ATP.Project.View;
 
 namespace Wpf.ATP.Project.Presenter
@@ -13,8 +6,8 @@ namespace Wpf.ATP.Project.Presenter
     /// <summary>
     /// Generate a 3d Maze - Generates a new maze with given user input
     /// </summary>
-    /// 
-    class Generate3dMazeCommand : ACommand
+    ///
+    internal class Generate3dMazeCommand : ACommand
     {
         /// <summary>
         /// Generate3dMazeCommand command constructor

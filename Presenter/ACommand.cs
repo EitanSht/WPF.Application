@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Wpf.ATP.Project.Model;
+﻿using Wpf.ATP.Project.Model;
 using Wpf.ATP.Project.View;
 
 namespace Wpf.ATP.Project.Presenter
 {
     /// <summary>
-    /// Abstract Class of the commands, 
+    /// Abstract Class of the commands,
     /// is implemented by every command
     /// </summary>
-    abstract class ACommand : ICommand
+    internal abstract class ACommand : ICommand
     {
         protected IModel m_model;
         protected IView m_View;
@@ -29,7 +24,7 @@ namespace Wpf.ATP.Project.Presenter
         }
 
         /// <summary>
-        /// DoCommand - Abstract method that requests the information 
+        /// DoCommand - Abstract method that requests the information
         /// from the Model and represents the processed data in View.
         /// </summary>
         /// <param name="parameters">User Input - Varies from each command</param>

@@ -1,8 +1,8 @@
 ﻿<UserControl x:Class="Wpf.ATP.Project.View.MazeCell"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              Name="userControl"
              Width="20"
              Height="{Binding ElementName=userControl,
@@ -41,8 +41,5 @@
                            Path=Width}"
               Y1="0"
               Y2="0" />
-
-
-
     </Canvas>
 </UserControl>

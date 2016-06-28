@@ -1,10 +1,4 @@
 ﻿using Search;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using Wpf.ATP.Project.Model;
 using Wpf.ATP.Project.View;
 
@@ -13,7 +7,7 @@ namespace Wpf.ATP.Project.Presenter
     /// <summary>
     /// Display Solution - Displays the solution of the command
     /// </summary>
-    class DisplaySolutionCommand : ACommand
+    internal class DisplaySolutionCommand : ACommand
     {
         /// <summary>
         /// DisplaySolutionCommand command constructor
@@ -50,7 +44,6 @@ namespace Wpf.ATP.Project.Presenter
             }
             else // soultion exists
             {
-
                 string solutionString = "The solution for the maze named | " + parameters[0] + " |:\n";
                 solutionString += solution.GetSolutionPathByString() + "\n";
                 solutionString += "Solution for the maze named: | " + parameters[0] + " | completed.";

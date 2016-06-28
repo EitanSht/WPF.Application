@@ -1,21 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Wpf.ATP.Project.Model;
-using Wpf.ATP.Project.Presenter;
-using Wpf.ATP.Project.View;
 
 namespace Wpf.ATP.Project.View
 {
@@ -24,7 +10,8 @@ namespace Wpf.ATP.Project.View
     /// </summary>
     public partial class MainWindow : Window
     {
-        private MediaPlayer mediaPlayer = new MediaPlayer();
+        public static MediaPlayer mediaPlayerMain = new MediaPlayer();
+
         /// <summary>
         /// MainWindow Constructor
         /// </summary>
@@ -32,8 +19,8 @@ namespace Wpf.ATP.Project.View
         {
             InitializeComponent();
             WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
-            mediaPlayer.Open(new Uri(Directory.GetCurrentDirectory() + @"\HeartBeat.mp3"));
-            mediaPlayer.Play();
+            mediaPlayerMain.Open(new Uri(Directory.GetCurrentDirectory().Substring(0, Directory.GetCurrentDirectory().Length - 10) + @"\Music\HeartBeat.mp3"));
+            mediaPlayerMain.Play();
         }
 
         /// <summary>
@@ -44,7 +31,7 @@ namespace Wpf.ATP.Project.View
         private void BeginButtonClick(object sender, RoutedEventArgs e)
         {
             this.Hide();
-            InstructionsWindow instructionsWindow = new InstructionsWindow();
+            InstructionsWindow instructionsWindow = new InstructionsWindow(mediaPlayerMain);
             instructionsWindow.ShowDialog();
             this.Close();
         }
@@ -58,7 +45,5 @@ namespace Wpf.ATP.Project.View
         {
             this.Close();
         }
-
-
     }
 }

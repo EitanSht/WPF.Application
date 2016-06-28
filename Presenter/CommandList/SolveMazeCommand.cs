@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using Wpf.ATP.Project.Model;
+﻿using Wpf.ATP.Project.Model;
 using Wpf.ATP.Project.View;
 
 namespace Wpf.ATP.Project.Presenter
 {
     /// <summary>
-    /// Solve Maze - Solves the given maze with a given 
+    /// Solve Maze - Solves the given maze with a given
     /// solving algorithm - BFS/DFS
     /// </summary>
-    class SolveMazeCommand : ACommand
+    internal class SolveMazeCommand : ACommand
     {
         /// <summary>
         /// SolveMazeCommand command constructor

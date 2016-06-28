@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Search;
+﻿using Compression;
 using MazeGenerators;
-using Compression;
-using System.Threading;
+using Search;
+using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Runtime.CompilerServices;
 using System.IO.Compression;
+using System.Runtime.CompilerServices;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Threading;
 using System.Windows;
 
 namespace Wpf.ATP.Project.Model
@@ -18,9 +15,10 @@ namespace Wpf.ATP.Project.Model
     /// <summary>
     /// Model part of the MVP module
     /// </summary>
-    class MyModel : IModel
+    internal class MyModel : IModel
     {
         public event func ModelChanged;
+
         private Dictionary<string, Maze3d> m_mazesDictionary;
         private Dictionary<string, Solution> m_solutionsDictionary;
         private Dictionary<string, WinMaze> m_winMazesDictionary;
@@ -29,7 +27,7 @@ namespace Wpf.ATP.Project.Model
         private List<IStoppable> m_stoppingList = new List<IStoppable>();
         private List<string> m_instructions;
         private bool m_initiatedStop = false;
-        Solution mCurrentSolution = new Solution();
+        private Solution mCurrentSolution = new Solution();
         private bool isSolutionExists = false;
 
         /// <summary>
@@ -228,7 +226,7 @@ namespace Wpf.ATP.Project.Model
         }
 
         /// <summary>
-        /// Solve Maze - Solves the given maze with a given 
+        /// Solve Maze - Solves the given maze with a given
         /// solving algorithm - BFS/DFS
         /// </summary>
         /// <param name="mazeName">Maze name</param>
@@ -334,7 +332,7 @@ namespace Wpf.ATP.Project.Model
         }
 
         /// <summary>
-        /// Exit - Quits the program safely & closes 
+        /// Exit - Quits the program safely & closes
         /// all open thread and processes
         /// </summary>
         public void exit()
@@ -381,7 +379,6 @@ namespace Wpf.ATP.Project.Model
             //MessageBox.Show("add");
             m_mazesDictionary["maze"] = currentMaze;
             m_mazesDictionary[mazeName] = currentMaze;
-
         }
 
         /// <summary>
@@ -405,7 +402,6 @@ namespace Wpf.ATP.Project.Model
                     new FileStream(directoryPath + "\\solutions.dat", FileMode.Create, FileAccess.Write);
                 formatter.Serialize(writerFileStream, m_solutionsDictionary);
                 writerFileStream.Close();
-
             }
             catch (Exception)
             {
@@ -451,7 +447,6 @@ namespace Wpf.ATP.Project.Model
                     new FileStream(directoryPath + "\\mazes.dat", FileMode.Create, FileAccess.Write);
                 formatter.Serialize(writerFileStream, m_mazesDictionary);
                 writerFileStream.Close();
-
             }
             catch (Exception)
             {

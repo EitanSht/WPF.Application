@@ -1,19 +1,13 @@
-﻿using Wpf.ATP.Project.Model;
+﻿using System;
+using Wpf.ATP.Project.Model;
 using Wpf.ATP.Project.View;
-using MazeGenerators;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Wpf.ATP.Project.Presenter
 {
     /// <summary>
     /// Display Maze - Displays the loaded or created maze
     /// </summary>
-    class DisplayMazeCommand : ACommand
+    internal class DisplayMazeCommand : ACommand
     {
         /// <summary>
         /// DisplayMazeCommand command constructor

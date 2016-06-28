@@ -1,9 +1,6 @@
-﻿using System;
+﻿using MazeGenerators;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MazeGenerators;
 
 namespace Wpf.ATP.Project.Model
 {
@@ -21,9 +18,9 @@ namespace Wpf.ATP.Project.Model
         private int mPosY = 0;
         private int mPosZ = 0;
         private bool solutionExists = false;
-        List<string[]> mSolutionCoordinates;
+        private List<string[]> mSolutionCoordinates;
 
-        Dictionary<int, Cell[,]> mMazeCells = new Dictionary<int, Cell[,]>();
+        private Dictionary<int, Cell[,]> mMazeCells = new Dictionary<int, Cell[,]>();
 
         public int PosX
         {
@@ -179,6 +176,5 @@ namespace Wpf.ATP.Project.Model
                 }
             }
         }
-
     }
 }

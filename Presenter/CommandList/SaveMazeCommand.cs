@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 using Wpf.ATP.Project.Model;
 using Wpf.ATP.Project.View;
 
@@ -13,7 +8,7 @@ namespace Wpf.ATP.Project.Presenter
     /// Save Maze - Creates a compression of the maze and
     /// saves the file on the disk with a given file path
     /// </summary>
-    class SaveMazeCommand : ACommand
+    internal class SaveMazeCommand : ACommand
     {
         /// <summary>
         /// SaveMazeCommand command constructor

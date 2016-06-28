@@ -1,16 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
+﻿using System.Windows;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace Wpf.ATP.Project.View
 {
@@ -19,6 +8,15 @@ namespace Wpf.ATP.Project.View
     /// </summary>
     public partial class InstructionsWindow : Window
     {
+        private MediaPlayer mediaPlayerMain = null;
+
+        public InstructionsWindow(MediaPlayer mediaPlayerMain)
+        {
+            InitializeComponent();
+            WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
+            this.mediaPlayerMain = mediaPlayerMain;
+        }
+
         public InstructionsWindow()
         {
             InitializeComponent();
@@ -29,6 +27,7 @@ namespace Wpf.ATP.Project.View
         {
             this.Hide();
             MazeWindow mazeWindow = new MazeWindow();
+            mediaPlayerMain?.Stop();
             mazeWindow.ShowDialog();
             this.Close();
         }

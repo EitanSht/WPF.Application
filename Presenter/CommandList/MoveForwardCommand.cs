@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Wpf.ATP.Project.Model;
+﻿using Wpf.ATP.Project.Model;
 using Wpf.ATP.Project.View;
 
 namespace Wpf.ATP.Project.Presenter
@@ -11,7 +6,7 @@ namespace Wpf.ATP.Project.Presenter
     /// <summary>
     /// Move Forward - Moves the playes forward in the maze
     /// </summary>
-    class MoveForwardCommand : ACommand
+    internal class MoveForwardCommand : ACommand
     {
         /// <summary>
         /// MoveForwardCommand Command constructor

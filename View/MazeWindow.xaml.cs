@@ -1,21 +1,12 @@
-﻿using MazeGenerators;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using Wpf.ATP.Project.Model;
 using Wpf.ATP.Project.Presenter;
 
@@ -27,7 +18,9 @@ namespace Wpf.ATP.Project.View
     public partial class MazeWindow : Window, IView
     {
         public event View.func ViewChanged;
+
         public event View.func ViewStart;
+
         private Dictionary<string, Wpf.ATP.Project.Presenter.ICommand> m_commands;
         private List<string> userInput;
         private string mCurrentCommandName;
@@ -45,13 +38,12 @@ namespace Wpf.ATP.Project.View
         /// </summary>
         public MazeWindow()
         {
-
             IModel model = new MyModel();
             MyPresenter presenter = new MyPresenter(model, this);
             userInput = new List<string>();
             InitializeComponent();
             WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
-            mediaPlayer.Open(new Uri(Directory.GetCurrentDirectory() + @"\Rainbow6.mp3"));
+            mediaPlayer.Open(new Uri(Directory.GetCurrentDirectory().Substring(0, Directory.GetCurrentDirectory().Length - 10) + @"\Music\Rainbow6.mp3"));
             mediaPlayer.Play();
         }
 
@@ -82,7 +74,6 @@ namespace Wpf.ATP.Project.View
                 errorOutput("Please insert 'Size' value");
                 return;
             }
-
 
             int mLevels = Convert.ToInt32(levelsData.Text);
             int mColumns = Convert.ToInt32(columnsData.Text);
@@ -266,30 +257,35 @@ namespace Wpf.ATP.Project.View
                     mCurrentCommandName = "left";
                     ViewChanged();
                     break;
+
                 case Key.Right:
                     e.Handled = true;
                     userInput.Clear();
                     mCurrentCommandName = "right";
                     ViewChanged();
                     break;
+
                 case Key.Down:
                     e.Handled = true;
                     userInput.Clear();
                     mCurrentCommandName = "forward";
                     ViewChanged();
                     break;
+
                 case Key.Up:
                     e.Handled = true;
                     userInput.Clear();
                     mCurrentCommandName = "back";
                     ViewChanged();
                     break;
+
                 case Key.PageDown:
                     e.Handled = true;
                     userInput.Clear();
                     mCurrentCommandName = "down";
                     ViewChanged();
                     break;
+
                 case Key.PageUp:
                     e.Handled = true;
                     userInput.Clear();

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Wpf.ATP.Project.Model;
+﻿using Wpf.ATP.Project.Model;
 using Wpf.ATP.Project.View;
 
 namespace Wpf.ATP.Project.Presenter
@@ -11,7 +6,7 @@ namespace Wpf.ATP.Project.Presenter
     /// <summary>
     /// Move Right - Moves the playes right in the maze
     /// </summary>
-    class MoveRightCommand : ACommand
+    internal class MoveRightCommand : ACommand
     {
         /// <summary>
         /// MoveRightCommand Command constructor

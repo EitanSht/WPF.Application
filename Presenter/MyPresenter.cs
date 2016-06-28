@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Collections.Generic;
 using Wpf.ATP.Project.Model;
 using Wpf.ATP.Project.View;
 
@@ -13,7 +7,7 @@ namespace Wpf.ATP.Project.Presenter
     /// <summary>
     /// Presenter part of the MVP module
     /// </summary>
-    class MyPresenter
+    internal class MyPresenter
     {
         private IModel m_model;
         private IView m_view;
@@ -30,13 +24,13 @@ namespace Wpf.ATP.Project.Presenter
             m_model = model;
             m_view = view;
 
-            m_view.ViewStart += delegate() // View Start
+            m_view.ViewStart += delegate () // View Start
             {
                 createConsoleCommands();
                 m_commands = m_view.getAllCommands();
             };
 
-            m_view.ViewChanged += delegate() // View Changed
+            m_view.ViewChanged += delegate () // View Changed
             {
                 string[] userCommand = m_view.getUserCommand();
                 string commandName = m_view.getUserCommandName();
@@ -48,7 +42,7 @@ namespace Wpf.ATP.Project.Presenter
                 m_model.modelEvent();
             };
 
-            m_model.ModelChanged += delegate() // Model Changed
+            m_model.ModelChanged += delegate () // Model Changed
             {
                 string[] instructions = m_model.getInstructions();
                 string[] userCommand = m_view.getUserCommand();

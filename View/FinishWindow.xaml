@@ -3,37 +3,37 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Congratulations" Height="200" Width="500">
     <Window.Background>
-        <ImageBrush ImageSource="../Graphics/Green_BG.jpg"/>
+        <ImageBrush ImageSource="../Graphics/Green_BG.jpg" />
     </Window.Background>
     <Border BorderBrush="Black" BorderThickness="4">
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="20"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="2*"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="20" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="2*" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <TextBlock Text="Congratulations, You Completed The Maze" HorizontalAlignment="Center" Foreground="Yellow" FontSize="22" FontWeight="Bold"
-                   Grid.Row="1" VerticalAlignment="Center"/>
+                   Grid.Row="1" VerticalAlignment="Center" />
             <Button Content="O.K." HorizontalAlignment="Center" Width="Auto" HorizontalContentAlignment="Stretch" Margin="0,0,0,5" Grid.Row="2" Click="finishedButtonClick" FontFamily="Candara" FontSize="20" VerticalAlignment="Bottom">
                 <Button.Style>
                     <Style TargetType="{x:Type Button}">
-                        <Setter Property="Background" Value="Transparent"/>
-                        <Setter Property="FontWeight" Value="ExtraLight"/>
-                        <Setter Property="Foreground" Value="Yellow"/>
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="FontWeight" Value="ExtraLight" />
+                        <Setter Property="Foreground" Value="Yellow" />
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="{x:Type Button}">
                                     <Border Background="{TemplateBinding Background}">
-                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                                     </Border>
                                 </ControlTemplate>
                             </Setter.Value>
                         </Setter>
                         <Style.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="FontWeight" Value="ExtraBold"/>
-                                <Setter Property="Foreground" Value="Yellow"/>
+                                <Setter Property="FontWeight" Value="ExtraBold" />
+                                <Setter Property="Foreground" Value="Yellow" />
                             </Trigger>
                         </Style.Triggers>
                     </Style>
@@ -42,4 +42,3 @@
         </Grid>
     </Border>
 </Window>
-

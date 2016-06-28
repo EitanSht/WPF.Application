@@ -1,22 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MazeGenerators;
 using Search;
-using MazeGenerators;
+using System.Collections.Generic;
 
 namespace Wpf.ATP.Project.Model
 {
-    delegate void func();
+    internal delegate void func();
 
     /// <summary>
     /// Interface that will be implemented in order to use the Model
     /// as part of the MVP module
     /// </summary>
-    interface IModel
+    internal interface IModel
     {
         event func ModelChanged;
+
         /// <summary>
         /// Directory Command - Returns file names & paths
         /// </summary>
@@ -72,7 +69,7 @@ namespace Wpf.ATP.Project.Model
         long fileSize(string Path);
 
         /// <summary>
-        /// Solve Maze - Solves the given maze with a given 
+        /// Solve Maze - Solves the given maze with a given
         /// solving algorithm - BFS/DFS
         /// </summary>
         /// <param name="mazeName">Maze name</param>
@@ -145,7 +142,7 @@ namespace Wpf.ATP.Project.Model
         void zipDictionaries(string directoryPath);
 
         /// <summary>
-        /// Exit - Quits the program safely & closes 
+        /// Exit - Quits the program safely & closes
         /// all open thread and processes
         /// </summary>
         void exit();

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.IO;
 using Wpf.ATP.Project.Model;
 using Wpf.ATP.Project.View;
 
@@ -14,7 +8,7 @@ namespace Wpf.ATP.Project.Presenter
     /// Load Maze - Loads a maze to the memory with a given file path
     /// from the user
     /// </summary>
-    class LoadMazeCommand : ACommand
+    internal class LoadMazeCommand : ACommand
     {
         /// <summary>
         /// LoadMazeCommand command constructor

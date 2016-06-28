@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MazeGenerators;
-using Wpf.ATP.Project.Presenter;
+﻿using System.Collections.Generic;
 using Wpf.ATP.Project.Model;
+using Wpf.ATP.Project.Presenter;
 
 namespace Wpf.ATP.Project.View
 {
@@ -15,9 +10,10 @@ namespace Wpf.ATP.Project.View
     /// Interface that will be implemented in order to use the View
     /// as part of the MVP module
     /// </summary>
-    interface IView
+    internal interface IView
     {
         event func ViewChanged;
+
         event func ViewStart;
 
         /// <summary>
@@ -30,7 +26,6 @@ namespace Wpf.ATP.Project.View
         /// </summary>
         /// <param name="commands">Console commands dictionary type object</param>
         void setCommands(Dictionary<string, ICommand> commands);
-
 
         /// <summary>
         /// Stream output method - Prints to the screen using a message box

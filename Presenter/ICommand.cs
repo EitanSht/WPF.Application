@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Wpf.ATP.Project.Presenter
+﻿namespace Wpf.ATP.Project.Presenter
 {
     /// <summary>
     /// Interface that will be implemented in order to use commands
@@ -12,7 +6,7 @@ namespace Wpf.ATP.Project.Presenter
     public interface ICommand
     {
         /// <summary>
-        /// DoCommand - To be implemented method that requests the information 
+        /// DoCommand - To be implemented method that requests the information
         /// from the Model and represents the processed data in View.
         /// </summary>
         /// <param name="parameters">User Input - Varies from each command</param>
@@ -25,7 +19,7 @@ namespace Wpf.ATP.Project.Presenter
         string GetName();
 
         /// <summary>
-        /// Get Information - To be implemented method that returns the 
+        /// Get Information - To be implemented method that returns the
         /// information of the command
         /// </summary>
         /// <returns>String with the command information</returns>
