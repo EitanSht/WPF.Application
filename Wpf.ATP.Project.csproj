@@ -60,6 +60,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Model\IModel.cs" />
     <Compile Include="Model\MyModel.cs" />
     <Compile Include="Model\WinMaze.cs" />

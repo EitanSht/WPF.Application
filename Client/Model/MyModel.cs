@@ -8,7 +8,6 @@ using System.IO.Compression;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
-using System.Windows;
 
 namespace Wpf.ATP.Project.Model
 {
@@ -287,7 +286,7 @@ namespace Wpf.ATP.Project.Model
             }
             else // Solution exists
             {
-                MessageBox.Show(("The solution exists for the maze named: \n" + mazeName), "Solution Exists");
+                //MessageBox.Show(("The solution exists for the maze named: \n" + mazeName), "Solution Exists");
             }
         }
 
