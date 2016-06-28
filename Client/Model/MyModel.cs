@@ -134,7 +134,6 @@ namespace Wpf.ATP.Project.Model
         /// <returns>True if successful saving the maze</returns>
         public bool saveMaze(string mazeName, string filePath)
         {
-            //MessageBox.Show("save: " + mazeName);
             WinMaze winMaze = m_currentWinMaze;
             Maze3d currentMaze = winMaze.getMaze();
             add3dMaze(mazeName, currentMaze);
@@ -222,72 +221,6 @@ namespace Wpf.ATP.Project.Model
         {
             FileInfo fileInformation = new FileInfo(filePath);
             return fileInformation.Length;
-        }
-
-        /// <summary>
-        /// Solve Maze - Solves the given maze with a given
-        /// solving algorithm - BFS/DFS
-        /// </summary>
-        /// <param name="mazeName">Maze name</param>
-        /// <param name="solvingAlgorithm">Solving algorithm - BFS/DFS</param>
-        public void solveMaze(string mazeName, string solvingAlgorithm)
-        {
-            ISearchingAlgorithm searchingAlgorithm = null;
-            if (solvingAlgorithm == "DFS")
-            {
-                searchingAlgorithm = new DFS();
-            }
-            else if (solvingAlgorithm == "BFS")
-            {
-                searchingAlgorithm = new BFS();
-            }
-            else
-            {
-                return;
-            }
-
-            var resetEvent = new ManualResetEvent(false);
-            ThreadPool.QueueUserWorkItem(new WaitCallback((state) =>
-            {
-                solve(searchingAlgorithm, mazeName);
-                resetEvent.Set();
-            }));
-            resetEvent.WaitOne();
-        }
-
-        /// <summary>
-        /// Thread solving of the maze - to be implemented in a thread
-        /// </summary>
-        /// <param name="searchingAlgorithm">Chosen search algorithm</param>
-        /// <param name="mazeName">Maze name</param>
-        private void solve(ISearchingAlgorithm searchingAlgorithm, string mazeName)
-        {
-            ISearchable maze;
-            Solution mazeSolution;
-            if (!solutionExists(mazeName))
-            {
-                try
-                {
-                    maze = new SearchableMaze3d(m_mazesDictionary[mazeName]);
-                }
-                catch (Exception)
-                {
-                    return;
-                }
-                m_stoppingList.Add(searchingAlgorithm);
-                mazeSolution = searchingAlgorithm.Solve(maze);
-                m_stoppingList.Remove(searchingAlgorithm);
-                List<string[]> getSolutionCoordinate = mazeSolution.getSolutionCoordinates();
-                m_solutionsDictionary[mazeName] = mazeSolution;
-                mCurrentSolution = mazeSolution;
-                isSolutionExists = true;
-                saveSolutionDictionary();
-                saveMazeDictionary();
-            }
-            else // Solution exists
-            {
-                //MessageBox.Show(("The solution exists for the maze named: \n" + mazeName), "Solution Exists");
-            }
         }
 
         /// <summary>
