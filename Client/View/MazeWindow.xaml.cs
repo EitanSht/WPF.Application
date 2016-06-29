@@ -1,16 +1,20 @@
-﻿using Microsoft.Win32;
+﻿using Client.Presenter;
+using MazeGenerators;
+using Microsoft.Win32;
+using Search;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Net.Sockets;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using Wpf.ATP.Project.Model;
-using Wpf.ATP.Project.Presenter;
 
-namespace Wpf.ATP.Project.View
+namespace Client.View
 {
     /// <summary>
     /// Interaction logic for MazeWindow.xaml
@@ -18,9 +22,10 @@ namespace Wpf.ATP.Project.View
     public partial class MazeWindow : Window, IView
     {
         public event View.func ViewChanged;
+
         public event View.func ViewStart;
 
-        private Dictionary<string, Wpf.ATP.Project.Presenter.ICommand> m_commands;
+        private Dictionary<string, Client.Presenter.ICommand> m_commands;
         private List<string> userInput;
         private string mCurrentCommandName;
         private WinMaze staticMaze;
@@ -318,6 +323,8 @@ namespace Wpf.ATP.Project.View
                 solutionButton.IsEnabled = true;
             }
             solveButton.IsEnabled = false;
+
+
             ViewChanged();
         }
 
@@ -563,5 +570,7 @@ namespace Wpf.ATP.Project.View
                 }
             }
         }
+
+        
     }
 }

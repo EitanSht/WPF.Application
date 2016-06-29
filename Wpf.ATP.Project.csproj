@@ -65,15 +65,11 @@
     <Compile Include="Model\MyModel.cs" />
     <Compile Include="Model\WinMaze.cs" />
     <Compile Include="Presenter\ACommand.cs" />
-    <Compile Include="Presenter\CommandList\DirCommand.cs" />
     <Compile Include="Presenter\CommandList\DisplayMazeCommand.cs" />
     <Compile Include="Presenter\CommandList\DisplaySolutionCommand.cs" />
     <Compile Include="Presenter\CommandList\ExitCommand.cs" />
-    <Compile Include="Presenter\CommandList\FileSizeCommand.cs" />
     <Compile Include="Presenter\CommandList\Generate3dMazeCommand.cs" />
-    <Compile Include="Presenter\CommandList\InsertSolutionCommand.cs" />
     <Compile Include="Presenter\CommandList\LoadMazeCommand.cs" />
-    <Compile Include="Presenter\CommandList\MazeSizeCommand.cs" />
     <Compile Include="Presenter\CommandList\MoveBackCommand.cs" />
     <Compile Include="Presenter\CommandList\MoveDownCommand.cs" />
     <Compile Include="Presenter\CommandList\MoveForwardCommand.cs" />

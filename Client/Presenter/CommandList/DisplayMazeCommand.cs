@@ -1,45 +1,50 @@
-﻿using System.IO;
-using Wpf.ATP.Project.Model;
-using Wpf.ATP.Project.View;
+﻿using Client.View;
+using System;
 
-namespace Wpf.ATP.Project.Presenter
+namespace Client.Presenter
 {
     /// <summary>
-    /// File Size - Returns the size of the file in bytes
+    /// Display Maze - Displays the loaded or created maze
     /// </summary>
-    internal class FileSizeCommand : ACommand
+    internal class DisplayMazeCommand : ACommand
     {
         /// <summary>
-        /// FileSizeCommand command constructor
+        /// DisplayMazeCommand command constructor
         /// </summary>
         /// <param name="model">Model</param>
         /// <param name="view">View</param>
-        public FileSizeCommand(IModel model, IView view)
+        public DisplayMazeCommand(IModel model, IView view)
             : base(model, view)
         {
             // Empty Constructor
         }
 
         /// <summary>
-        /// Initates the command that returns the size of the file
+        /// Initiates the display command
         /// </summary>
-        /// <param name="parameters">File path</param>
+        /// <param name="parameters">User input - maze name</param>
         public override void DoCommand(params string[] parameters)
         {
-            if (parameters.Length != 1)
+            if (parameters.Length != 2)
             {
                 m_View.errorOutput("ERROR: Invalid number of parameters.\n");
                 m_View.errorOutput("Correct use: " + getInformation() + "\n");
                 return;
             }
-            if (!File.Exists(parameters[0]))
+            else
             {
-                m_View.errorOutput("ERROR: The path input is not available or incorrect.\n");
-                return;
+                WinMaze receivedMaze;
+                try
+                {
+                    receivedMaze = m_model.getWinMaze(parameters[0]);
+                }
+                catch (Exception)
+                {
+                    m_View.errorOutput("ERROR: Maze does not exist.\n");
+                    return;
+                }
+                m_View.printMaze(receivedMaze, Convert.ToInt32(parameters[1]));
             }
-            long fileSize = m_model.fileSize(parameters[0]);
-            m_View.Output("File : | " + parameters[0] + " |");
-            m_View.Output("Size : | " + fileSize.ToString() + " bytes |\n");
         }
 
         /// <summary>
@@ -48,7 +53,7 @@ namespace Wpf.ATP.Project.Presenter
         /// <returns>String with the command details</returns>
         public override string getInformation()
         {
-            return "fileSize <file_path>";
+            return "display <maze_name>";
         }
 
         /// <summary>
@@ -57,7 +62,7 @@ namespace Wpf.ATP.Project.Presenter
         /// <returns>String with the command name</returns>
         public override string GetName()
         {
-            return "filesize";
+            return "dislay";
         }
     }
 }

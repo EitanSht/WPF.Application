@@ -55,13 +55,6 @@ namespace Wpf.ATP.Project.Model
         void loadMaze(string path, string mazeName);
 
         /// <summary>
-        /// Maze Size - Returns the size of the maze object in the memory
-        /// </summary>
-        /// <param name="mazeName">Maze name</param>
-        /// <returns>The size in bytes of the maze object in the memory</returns>
-        int mazeSize(string mazeName);
-
-        /// <summary>
         /// File Size - Returns the size of the file in bytes
         /// </summary>
         /// <param name="Path">Directory path</param>
@@ -205,11 +198,5 @@ namespace Wpf.ATP.Project.Model
         /// </summary>
         /// <returns>String array of instructions</returns>
         string[] getInstructions();
-
-        /// <summary>
-        /// Inserts a solution into the current maze
-        /// </summary>
-        /// <param name="name">Name of the current maze</param>
-        void insertSolution(string name);
     }
 }

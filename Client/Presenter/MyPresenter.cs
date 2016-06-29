@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
-using Wpf.ATP.Project.Model;
-using Wpf.ATP.Project.View;
+﻿using Client.View;
+using System.Collections.Generic;
 
-namespace Wpf.ATP.Project.Presenter
+namespace Client.Presenter
 {
     /// <summary>
     /// Presenter part of the MVP module

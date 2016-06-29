@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Wpf.ATP.Project.Model
+namespace Client
 {
     /// <summary>
     /// WinMaze class, represents the WPF version of

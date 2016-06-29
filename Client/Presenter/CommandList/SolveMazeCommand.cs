@@ -1,31 +1,31 @@
-﻿using Wpf.ATP.Project.Model;
-using Wpf.ATP.Project.View;
+﻿using Client.View;
 
-namespace Wpf.ATP.Project.Presenter
+namespace Client.Presenter
 {
     /// <summary>
-    /// Insert Solution - Inserts a solution to a given maze
+    /// Solve Maze - Solves the given maze with a given
+    /// solving algorithm - BFS/DFS
     /// </summary>
-    internal class InsertSolutionCommand : ACommand
+    internal class SolveMazeCommand : ACommand
     {
         /// <summary>
-        /// InsertSolutionCommand command constructor
+        /// SolveMazeCommand command constructor
         /// </summary>
         /// <param name="model">Model</param>
         /// <param name="view">View</param>
-        public InsertSolutionCommand(IModel model, IView view)
+        public SolveMazeCommand(IModel model, IView view)
             : base(model, view)
         {
             // Empty Constructor
         }
 
         /// <summary>
-        /// Initates the Insert Solution command
+        /// Initates the solveMaze command
         /// </summary>
-        /// <param name="parameters">Maze name</param>
+        /// <param name="parameters">Maze name, Solving algorithm - BFS/DFS</param>
         public override void DoCommand(params string[] parameters)
         {
-            if (parameters.Length != 1)
+            if (parameters.Length != 2)
             {
                 m_View.errorOutput("ERROR: Invalid number of parameters.\n");
                 m_View.errorOutput("Correct use: " + getInformation() + "\n");
@@ -33,7 +33,7 @@ namespace Wpf.ATP.Project.Presenter
             }
             else
             {
-                m_model.insertSolution(parameters[0]);
+                m_model.solveMaze(parameters[0], parameters[1]);
             }
         }
 
@@ -43,7 +43,7 @@ namespace Wpf.ATP.Project.Presenter
         /// <returns>String with the command details</returns>
         public override string getInformation()
         {
-            return "insertSolution <maze_name>";
+            return "solveMaze <maze_name> <BFS/DFS>";
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace Wpf.ATP.Project.Presenter
         /// <returns>String with the command name</returns>
         public override string GetName()
         {
-            return "insertSolution";
+            return "solvemaze";
         }
     }
 }

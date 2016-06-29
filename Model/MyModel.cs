@@ -193,28 +193,6 @@ namespace Wpf.ATP.Project.Model
         }
 
         /// <summary>
-        /// Maze Size - Returns the size of the maze object in the memory
-        /// </summary>
-        /// <param name="mazeName">Maze name</param>
-        /// <returns>The size in bytes of the maze object in the memory</returns>
-        public int mazeSize(string mazeName)
-        {
-            BinaryFormatter binaryFormatter = new BinaryFormatter();
-            MemoryStream memoryStream = new MemoryStream();
-            byte[] returnedStream;
-
-            Maze3d currentMaze = getMazeByName(mazeName);
-            if (currentMaze == null)
-            {
-                return -1;
-            }
-            binaryFormatter.Serialize(memoryStream, currentMaze);
-            returnedStream = memoryStream.ToArray();
-
-            return returnedStream.Length;
-        }
-
-        /// <summary>
         /// File Size - Returns the size of the file in bytes
         /// </summary>
         /// <param name="Path">Directory path</param>
@@ -726,16 +704,6 @@ namespace Wpf.ATP.Project.Model
         public string[] getInstructions()
         {
             return m_instructions.ToArray();
-        }
-
-        /// <summary>
-        /// Inserts the solution to the current maze
-        /// </summary>
-        /// <param name="name">Name of the maze</param>
-        public void insertSolution(string name)
-        {
-            WinMaze winMaze = getWinMaze(name);
-            Solution solution = m_solutionsDictionary[name];
         }
     }
 }

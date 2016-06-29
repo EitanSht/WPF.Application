@@ -5,11 +5,15 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Net.Sockets;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
+using System.Windows;
 
-namespace Wpf.ATP.Project.Model
+namespace Client
 {
     /// <summary>
     /// Model part of the MVP module
@@ -28,6 +32,13 @@ namespace Wpf.ATP.Project.Model
         private bool m_initiatedStop = false;
         private Solution mCurrentSolution = new Solution();
         private bool isSolutionExists = false;
+
+        [DllImport("kernel32.dll")]
+        static extern IntPtr GetConsoleWindow();
+        [DllImport("user32.dll")]
+        static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+        const int SW_HIDE = 0;
+        const int SW_SHOW = 5;
 
         /// <summary>
         /// MyModel constructor
@@ -50,6 +61,10 @@ namespace Wpf.ATP.Project.Model
                 m_solutionsDictionary = new Dictionary<string, Solution>();
             m_winMazesDictionary = new Dictionary<string, WinMaze>();
             m_instructions = new List<string>();
+
+            var handle = GetConsoleWindow();
+            ShowWindow(handle, SW_HIDE); // Hide
+
         }
 
         /// <summary>
@@ -134,6 +149,7 @@ namespace Wpf.ATP.Project.Model
         /// <returns>True if successful saving the maze</returns>
         public bool saveMaze(string mazeName, string filePath)
         {
+            //MessageBox.Show("save: " + mazeName);
             WinMaze winMaze = m_currentWinMaze;
             Maze3d currentMaze = winMaze.getMaze();
             add3dMaze(mazeName, currentMaze);
@@ -161,6 +177,7 @@ namespace Wpf.ATP.Project.Model
         /// <param name="mazeName">Name of the maze</param>
         public void loadMaze(string path, string mazeName)
         {
+            mazeName = mazeName.Substring(0, mazeName.Length - 5);
             int numberOfBytes;
             byte[] compressionArray = new byte[100];
             List<byte> compressedList = new List<byte>();
@@ -178,6 +195,7 @@ namespace Wpf.ATP.Project.Model
                 }
             }
             Maze3d loadedMaze = new Maze3d(compressedList.ToArray());
+            Console.WriteLine("name (load): " + mazeName);
             add3dMaze(mazeName, loadedMaze);
             WinMaze winMaze = new WinMaze(loadedMaze, "maze", 50);
             //if (!winMaze.isSolutionExists())
@@ -191,28 +209,6 @@ namespace Wpf.ATP.Project.Model
         }
 
         /// <summary>
-        /// Maze Size - Returns the size of the maze object in the memory
-        /// </summary>
-        /// <param name="mazeName">Maze name</param>
-        /// <returns>The size in bytes of the maze object in the memory</returns>
-        public int mazeSize(string mazeName)
-        {
-            BinaryFormatter binaryFormatter = new BinaryFormatter();
-            MemoryStream memoryStream = new MemoryStream();
-            byte[] returnedStream;
-
-            Maze3d currentMaze = getMazeByName(mazeName);
-            if (currentMaze == null)
-            {
-                return -1;
-            }
-            binaryFormatter.Serialize(memoryStream, currentMaze);
-            returnedStream = memoryStream.ToArray();
-
-            return returnedStream.Length;
-        }
-
-        /// <summary>
         /// File Size - Returns the size of the file in bytes
         /// </summary>
         /// <param name="Path">Directory path</param>
@@ -221,6 +217,80 @@ namespace Wpf.ATP.Project.Model
         {
             FileInfo fileInformation = new FileInfo(filePath);
             return fileInformation.Length;
+        }
+
+        /// <summary>
+        /// Solve Maze - Solves the given maze with a given
+        /// solving algorithm - BFS/DFS
+        /// </summary>
+        /// <param name="mazeName">Maze name</param>
+        /// <param name="solvingAlgorithm">Solving algorithm - BFS/DFS</param>
+        public void solveMaze(string mazeName, string solvingAlgorithm)
+        {
+            ISearchingAlgorithm searchingAlgorithm = null;
+            if (solvingAlgorithm == "DFS")
+            {
+                searchingAlgorithm = new DFS();
+            }
+            else if (solvingAlgorithm == "BFS")
+            {
+                searchingAlgorithm = new BFS();
+            }
+            else
+            {
+                return;
+            }
+
+            var resetEvent = new ManualResetEvent(false);
+            ThreadPool.QueueUserWorkItem(new WaitCallback((state) =>
+            {
+                //solve(searchingAlgorithm, mazeName);
+                solve(mazeName, solvingAlgorithm);
+                resetEvent.Set();
+            }));
+            resetEvent.WaitOne();
+        }
+
+        /// <summary>
+        /// Thread solving of the maze - to be implemented in a thread
+        /// </summary>
+        /// <param name="searchingAlgorithm">Chosen search algorithm</param>
+        /// <param name="mazeName">Maze name</param>
+        private void solve(string mazeName, string solvingAlgorithm)
+        {
+            //ISearchable maze;
+            //Solution mazeSolution;
+            //if (!solutionExists(mazeName))
+            //{
+            //    try
+            //    {
+            //        maze = new SearchableMaze3d(m_mazesDictionary[mazeName]);
+            //    }
+            //    catch (Exception)
+            //    {
+            //        return;
+            //    }
+            //    m_stoppingList.Add(searchingAlgorithm);
+            //    mazeSolution = searchingAlgorithm.Solve(maze);
+            //    m_stoppingList.Remove(searchingAlgorithm);
+            //    List<string[]> getSolutionCoordinate = mazeSolution.getSolutionCoordinates();
+            //    m_solutionsDictionary[mazeName] = mazeSolution;
+            //    mCurrentSolution = mazeSolution;
+            //    isSolutionExists = true;
+            //    saveSolutionDictionary();
+            //    saveMazeDictionary();
+            //}
+            //else // Solution exists
+            //{
+            //    MessageBox.Show(("The solution exists for the maze named: \n" + mazeName), "Solution Exists");
+            //}
+            ////////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////
+            CommunicateWithServer(mazeName, solvingAlgorithm);
+            ////////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////
         }
 
         /// <summary>
@@ -660,14 +730,89 @@ namespace Wpf.ATP.Project.Model
             return m_instructions.ToArray();
         }
 
-        /// <summary>
-        /// Inserts the solution to the current maze
-        /// </summary>
-        /// <param name="name">Name of the maze</param>
-        public void insertSolution(string name)
+        private void CommunicateWithServer(string mazeName, string solvingAlgorithm)
         {
-            WinMaze winMaze = getWinMaze(name);
-            Solution solution = m_solutionsDictionary[name];
+            var handle = GetConsoleWindow();
+            ShowWindow(handle, SW_SHOW); // Show
+
+
+            Console.WriteLine("Client CLI started!\n");
+            Console.WriteLine("Searching for the maze named: " + mazeName + "\nWith the searching algorithm: " + solvingAlgorithm);
+
+            int port = 5400;
+            String serverIP = "127.0.0.1";
+            try
+            {
+                IFormatter binaryFormatter = new BinaryFormatter();
+
+                //string command;
+                //do
+                //{
+                Object[] arrayToSend = new object[3];
+                arrayToSend[0] = m_mazesDictionary[mazeName];
+                arrayToSend[1] = mazeName;
+                arrayToSend[2] = solvingAlgorithm;
+
+                Console.Write("Client >> ");
+
+                Object[] receivedArray = new object[2];
+
+                using (TcpClient client = new TcpClient(serverIP, port))
+                {
+                    using (NetworkStream clientStream = client.GetStream())
+                    {
+                        binaryFormatter.Serialize(clientStream, arrayToSend); //Client -> Server (Serialize object to a given stream)
+                        receivedArray = (Object[])binaryFormatter.Deserialize(clientStream);
+                    }
+                }
+                //////
+                Solution receivedSolution = (Solution)receivedArray[0];
+                bool wasTheMazeSolved = (bool)receivedArray[1];
+                //////
+                m_solutionsDictionary[mazeName] = receivedSolution;
+                mCurrentSolution = receivedSolution;
+                isSolutionExists = true;
+
+                Console.WriteLine(receivedSolution.GetSolutionPathByString());
+                Console.WriteLine("\nWas it solved before: " + wasTheMazeSolved);
+
+
+                //} while (!command.Equals("exit"));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error communicating with server at: {0}. Exception: {1}", serverIP, e.Message);
+            }
+
+            //ISearchable maze;
+            //Solution mazeSolution;
+            //if (!solutionExists(mazeName))
+            //{
+            //    try
+            //    {
+            //        maze = new SearchableMaze3d(m_mazesDictionary[mazeName]);
+            //    }
+            //    catch (Exception)
+            //    {
+            //        return;
+            //    }
+            //    m_stoppingList.Add(searchingAlgorithm);
+
+            //    mazeSolution = searchingAlgorithm.Solve(maze);
+
+            //    m_stoppingList.Remove(searchingAlgorithm);
+            //    List<string[]> getSolutionCoordinate = mazeSolution.getSolutionCoordinates();
+            //    m_solutionsDictionary[mazeName] = mazeSolution;
+            //    mCurrentSolution = mazeSolution;
+            //    isSolutionExists = true;
+            //    saveSolutionDictionary();
+            //    saveMazeDictionary();
+            //}
+            //else // Solution exists
+            //{
+            //    MessageBox.Show(("The solution exists for the maze named: \n" + mazeName), "Solution Exists");
+            //}
+
         }
     }
 }
