@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Media;
 
@@ -11,6 +12,12 @@ namespace Client.View
     public partial class MainWindow : Window
     {
         public static MediaPlayer mediaPlayerMain = new MediaPlayer();
+        [DllImport("kernel32.dll")]
+        static extern IntPtr GetConsoleWindow();
+        [DllImport("user32.dll")]
+        static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+        const int SW_HIDE = 0;
+        const int SW_SHOW = 5;
 
         /// <summary>
         /// MainWindow Constructor
@@ -21,6 +28,8 @@ namespace Client.View
             WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
             mediaPlayerMain.Open(new Uri(Directory.GetCurrentDirectory().Substring(0, Directory.GetCurrentDirectory().Length - 10) + @"\Music\HeartBeat.mp3"));
             mediaPlayerMain.Play();
+            var handle = GetConsoleWindow();
+            ShowWindow(handle, SW_HIDE); // Hide
         }
 
         /// <summary>
