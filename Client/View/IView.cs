@@ -4,7 +4,7 @@
 
     /// <summary>
     /// Interface that will be implemented in order to use the View
-    /// as part of the MVP module
+    /// as part of the MVVM Design Pattern
     /// </summary>
     internal interface IView
     {

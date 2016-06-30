@@ -14,8 +14,11 @@
     <Setting Name="Cursor" Type="System.String" Scope="User">
       <Value Profile="(Default)">&gt;&gt; </Value>
     </Setting>
-    <Setting Name="Setting" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="Port" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">5400</Value>
+    </Setting>
+    <Setting Name="IP" Type="System.String" Scope="User">
+      <Value Profile="(Default)">127.0.0.1</Value>
     </Setting>
   </Settings>
 </SettingsFile>

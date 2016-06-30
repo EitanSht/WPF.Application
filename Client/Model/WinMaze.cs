@@ -178,6 +178,6 @@ namespace Client
             get { return mMazeCells; }
         }
 
-        #endregion
+        #endregion Properties
     }
 }

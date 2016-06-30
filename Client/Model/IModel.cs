@@ -8,7 +8,7 @@ namespace Client
 {
     /// <summary>
     /// Interface that will be implemented in order to use the Model
-    /// as part of the MVP module
+    /// as part of the MVVM Design Pattern
     /// </summary>
     internal interface IModel : INotifyPropertyChanged
     {
@@ -147,6 +147,7 @@ namespace Client
         void saveClicked();
 
         #region Properties Decleration
+
         string LevelData { get; set; }
         string ColumnData { get; set; }
         string RowData { get; set; }
@@ -155,6 +156,7 @@ namespace Client
         Canvas SecondaryMazeCanvas { get; set; }
         string Output { get; set; }
         string ErrorOutput { get; set; }
-        #endregion
+
+        #endregion Properties Decleration
     }
 }

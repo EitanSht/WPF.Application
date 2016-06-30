@@ -10,6 +10,8 @@ namespace Client.View
         private int workerThreads;
         private int completionPortThreads;
         private string solvingAlgorithm;
+        private string ipAddress;
+        private int port;
 
         /// <summary>
         /// Displays the window
@@ -19,6 +21,8 @@ namespace Client.View
             WorkerThreads = Properties.Settings.Default.WorkerThreads;
             CompletionPortThreads = Properties.Settings.Default.CompletionPortThreads;
             SolvingAlgorithm = Properties.Settings.Default.SolvingAlgorithm;
+            IPaddress = Properties.Settings.Default.IP;
+            Port = Properties.Settings.Default.Port;
 
             InitializeComponent();
             WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
@@ -26,6 +30,8 @@ namespace Client.View
             workerSlot.DataContext = new TextboxText() { textdata = WorkerThreads.ToString() };
             threadSlot.DataContext = new TextboxText() { textdata = CompletionPortThreads.ToString() };
             solvingSlot.DataContext = new TextboxText() { textdata = SolvingAlgorithm };
+            ipAddressSlot.DataContext = new TextboxText() { textdata = SolvingAlgorithm };
+            portSlot.DataContext = new TextboxText() { textdata = SolvingAlgorithm };
         }
 
         /// <summary>
@@ -72,6 +78,24 @@ namespace Client.View
             }
         }
 
-        #endregion
+        public string IPaddress
+        {
+            get { return ipAddress; }
+            set
+            {
+                ipAddress = value;
+            }
+        }
+
+        public int Port
+        {
+            get { return port; }
+            set
+            {
+                port = value;
+            }
+        }
+
+        #endregion Properties
     }
 }

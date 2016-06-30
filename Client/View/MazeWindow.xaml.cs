@@ -8,7 +8,7 @@ using System.Windows.Media;
 namespace Client.View
 {
     /// <summary>
-    /// Interaction logic for MazeWindow.xaml
+    /// View part of the MVVM Design Pattern
     /// </summary>
     public partial class MazeWindow : Window, IView
     {

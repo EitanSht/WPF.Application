@@ -18,11 +18,13 @@ using System.Windows.Controls;
 namespace Client
 {
     /// <summary>
-    /// Model part of the MVP module
+    /// Model part of the MVVM Design Pattern
     /// </summary>
     internal class MyModel : IModel
     {
         public event PropertyChangedEventHandler PropertyChanged;
+
+        #region Members & Variables
 
         private Dictionary<string, Maze3d> m_mazesDictionary;
         private Dictionary<string, Solution> m_solutionsDictionary;
@@ -39,6 +41,8 @@ namespace Client
         private bool isMazeExists = false;
         private bool solExists = false;
         private string currentMazeName = "maze";
+
+        #endregion Members & Variables
 
         /// <summary>
         /// MyModel constructor
@@ -259,6 +263,7 @@ namespace Client
             else // soultion exists
             {
                 List<string[]> tempList = solution.getSolutionCoordinates();
+                MessageBox.Show(solution.GetSolutionPathByString());
                 staticMaze.setSolutionCoordinates(tempList);
                 m_currentWinMaze.setSolutionCoordinates(tempList);
             }
@@ -616,8 +621,8 @@ namespace Client
             Output = ("Searching for the maze named: " + mazeName + "\nWith the searching algorithm: " + solvingAlgorithm);
             MessageBox.Show(Output, "Message");
 
-            int port = 5400;
-            String serverIP = "127.0.0.1";
+            int port = Properties.Settings.Default.Port;
+            String serverIP = Properties.Settings.Default.IP;
             try
             {
                 IFormatter binaryFormatter = new BinaryFormatter();

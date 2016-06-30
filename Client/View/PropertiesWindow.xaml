@@ -1,7 +1,9 @@
 ﻿<Window x:Class="Client.View.PropertiesWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Properties" Height="300" Width="500">
+        Title="Properties"
+        Width="500"
+        Height="350">
     <Window.Background>
         <ImageBrush ImageSource="../Graphics/Green_BG.jpg" />
     </Window.Background>
@@ -13,31 +15,131 @@
                 <RowDefinition Height="2*" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <TextBlock Text="System Default Properties" HorizontalAlignment="Center" Foreground="Yellow" FontSize="22" FontWeight="Bold"
-                   Grid.Row="1" VerticalAlignment="Top" />
-            <TextBlock Text="WorkerThreads" Foreground="Wheat" FontSize="18" Margin="60,10,0,0" FontWeight="Bold"
-                   Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Top" />
-            <TextBlock Text="CompletionPortThreads" Foreground="Wheat" FontSize="18" Margin="60,35,0,0" FontWeight="Bold"
-                   Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Top" />
-            <TextBlock Text="Maze Generation Algorithm" Foreground="Wheat" FontSize="18" Margin="60,60,0,0" FontWeight="Bold"
-                   Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Top" />
-            <TextBlock Text="Solving Algorithm" Foreground="Wheat" FontSize="18" Margin="60,85,0,0" FontWeight="Bold"
-                   Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Top" />
-            <TextBlock Name="workerSlot" Text="{Binding SolvingAlgorithm, ElementName=window}" Foreground="Wheat" FontSize="18" Margin="330,10,0,0" FontWeight="Bold"
-                   Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Top">
-       <Run Text="{Binding textdata}" />
+            <TextBlock Grid.Row="1"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Top"
+                       FontSize="22"
+                       FontWeight="Bold"
+                       Foreground="Yellow"
+                       Text="System Default Properties" />
+            <TextBlock Grid.Row="2"
+                       Margin="60,10,0,0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       FontSize="18"
+                       FontWeight="Bold"
+                       Foreground="Wheat"
+                       Text="WorkerThreads" />
+            <TextBlock Grid.Row="2"
+                       Margin="60,35,0,0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       FontSize="18"
+                       FontWeight="Bold"
+                       Foreground="Wheat"
+                       Text="CompletionPortThreads" />
+            <TextBlock Grid.Row="2"
+                       Margin="60,60,0,0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       FontSize="18"
+                       FontWeight="Bold"
+                       Foreground="Wheat"
+                       Text="Maze Generation Algorithm" />
+            <TextBlock Grid.Row="2"
+                       Margin="60,85,0,0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       FontSize="18"
+                       FontWeight="Bold"
+                       Foreground="Wheat"
+                       Text="Solving Algorithm" />
+            <TextBlock Grid.Row="2"
+                       Margin="60,110,0,0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       FontSize="18"
+                       FontWeight="Bold"
+                       Foreground="Wheat"
+                       Text="IP Address" />
+            <TextBlock Grid.Row="2"
+                       Margin="60,135,0,0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       FontSize="18"
+                       FontWeight="Bold"
+                       Foreground="Wheat"
+                       Text="Port" />
+            <TextBlock Name="workerSlot"
+                       Grid.Row="2"
+                       Margin="330,10,0,0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       FontSize="18"
+                       FontWeight="Bold"
+                       Foreground="Wheat"
+                       Text="{Binding SolvingAlgorithm,
+                                      ElementName=window}">
+                <Run Text="{Binding textdata}" />
             </TextBlock>
-            <TextBlock Name="threadSlot" Foreground="Wheat" FontSize="18" Margin="330,35,0,0" FontWeight="Bold"
-                   Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Top">
-                       <Run Text="{Binding textdata}" />
+            <TextBlock Name="threadSlot"
+                       Grid.Row="2"
+                       Margin="330,35,0,0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       FontSize="18"
+                       FontWeight="Bold"
+                       Foreground="Wheat">
+                <Run Text="{Binding textdata}" />
             </TextBlock>
-            <TextBlock Text="DFS" Foreground="Wheat" FontSize="18" Margin="330,60,0,0" FontWeight="Bold"
-                   Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Top" />
-            <TextBlock Name="solvingSlot" Foreground="Wheat" FontSize="18" Margin="330,85,0,0" FontWeight="Bold"
-                   Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Top">
-                       <Run Text="{Binding textdata}" />
+            <TextBlock Grid.Row="2"
+                       Margin="330,60,0,0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       FontSize="18"
+                       FontWeight="Bold"
+                       Foreground="Wheat"
+                       Text="DFS" />
+            <TextBlock Name="solvingSlot"
+                       Grid.Row="2"
+                       Margin="330,85,0,0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       FontSize="18"
+                       FontWeight="Bold"
+                       Foreground="Wheat">
+                <Run Text="{Binding textdata}" />
             </TextBlock>
-            <Button Content="O.K." HorizontalAlignment="Center" Width="Auto" HorizontalContentAlignment="Stretch" Margin="0,0,0,0" Grid.Row="3" Click="okClicked" FontFamily="Candara" FontSize="20" VerticalAlignment="Center">
+            <TextBlock Name="ipAddressSlot"
+                       Grid.Row="2"
+                       Margin="330,110,0,0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       FontSize="18"
+                       FontWeight="Bold"
+                       Foreground="Wheat">
+                <Run Text="{Binding textdata}" />
+            </TextBlock>
+            <TextBlock Name="portSlot"
+                       Grid.Row="2"
+                       Margin="330,135,0,0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       FontSize="18"
+                       FontWeight="Bold"
+                       Foreground="Wheat">
+                <Run Text="{Binding textdata}" />
+            </TextBlock>
+            <Button Grid.Row="3"
+                    Width="Auto"
+                    Margin="0,0,0,0"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    HorizontalContentAlignment="Stretch"
+                    Click="okClicked"
+                    Content="O.K."
+                    FontFamily="Candara"
+                    FontSize="20">
                 <Button.Style>
                     <Style TargetType="{x:Type Button}">
                         <Setter Property="Background" Value="Transparent" />
