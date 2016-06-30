@@ -19,37 +19,7 @@ namespace Client
         private int mPosZ = 0;
         private bool solutionExists = false;
         private List<string[]> mSolutionCoordinates;
-
         private Dictionary<int, Cell[,]> mMazeCells = new Dictionary<int, Cell[,]>();
-
-        public int PosX
-        {
-            get { return mPosX; }
-            set { mPosX = value; }
-        }
-
-        public int PosY
-        {
-            get { return mPosY; }
-            set { mPosY = value; }
-        }
-
-        public int PosZ
-        {
-            get { return mPosZ; }
-            set { mPosZ = value; }
-        }
-
-        public int CellSize
-        {
-            get { return mCellSize; }
-            set { mCellSize = value; }
-        }
-
-        public Dictionary<int, Cell[,]> AllCells
-        {
-            get { return mMazeCells; }
-        }
 
         /// <summary>
         /// WinMaze Constructor
@@ -176,5 +146,38 @@ namespace Client
                 }
             }
         }
+
+        #region Properties
+
+        public int PosX
+        {
+            get { return mPosX; }
+            set { mPosX = value; }
+        }
+
+        public int PosY
+        {
+            get { return mPosY; }
+            set { mPosY = value; }
+        }
+
+        public int PosZ
+        {
+            get { return mPosZ; }
+            set { mPosZ = value; }
+        }
+
+        public int CellSize
+        {
+            get { return mCellSize; }
+            set { mCellSize = value; }
+        }
+
+        public Dictionary<int, Cell[,]> AllCells
+        {
+            get { return mMazeCells; }
+        }
+
+        #endregion
     }
 }

@@ -12,12 +12,13 @@ namespace Client.View
     public partial class MainWindow : Window
     {
         public static MediaPlayer mediaPlayerMain = new MediaPlayer();
+
         [DllImport("kernel32.dll")]
-        static extern IntPtr GetConsoleWindow();
+        private static extern IntPtr GetConsoleWindow();
         [DllImport("user32.dll")]
-        static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-        const int SW_HIDE = 0;
-        const int SW_SHOW = 5;
+        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+        private const int SW_HIDE = 0;
+        private const int SW_SHOW = 5;
 
         /// <summary>
         /// MainWindow Constructor
@@ -40,7 +41,7 @@ namespace Client.View
         private void BeginButtonClick(object sender, RoutedEventArgs e)
         {
             this.Hide();
-            InstructionsWindow instructionsWindow = new InstructionsWindow(mediaPlayerMain);
+            InstructionsWindow instructionsWindow = new InstructionsWindow(mediaPlayerMain, true);
             instructionsWindow.ShowDialog();
             this.Close();
         }

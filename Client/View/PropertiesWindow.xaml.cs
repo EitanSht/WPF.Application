@@ -11,6 +11,35 @@ namespace Client.View
         private int completionPortThreads;
         private string solvingAlgorithm;
 
+        /// <summary>
+        /// Displays the window
+        /// </summary>
+        public PropertiesWindow()
+        {
+            WorkerThreads = Properties.Settings.Default.WorkerThreads;
+            CompletionPortThreads = Properties.Settings.Default.CompletionPortThreads;
+            SolvingAlgorithm = Properties.Settings.Default.SolvingAlgorithm;
+
+            InitializeComponent();
+            WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
+
+            workerSlot.DataContext = new TextboxText() { textdata = WorkerThreads.ToString() };
+            threadSlot.DataContext = new TextboxText() { textdata = CompletionPortThreads.ToString() };
+            solvingSlot.DataContext = new TextboxText() { textdata = SolvingAlgorithm };
+        }
+
+        /// <summary>
+        /// Method to handle the OK button clicking
+        /// </summary>
+        /// <param name="sender">No implementation</param>
+        /// <param name="e">Mouse</param>
+        private void okClicked(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        #region Properties
+
         public class TextboxText
         {
             public string textdata { get; set; }
@@ -43,23 +72,6 @@ namespace Client.View
             }
         }
 
-        public PropertiesWindow()
-        {
-            WorkerThreads = Properties.Settings.Default.WorkerThreads;
-            CompletionPortThreads = Properties.Settings.Default.CompletionPortThreads;
-            SolvingAlgorithm = Properties.Settings.Default.SolvingAlgorithm;
-
-            InitializeComponent();
-            WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
-
-            workerSlot.DataContext = new TextboxText() { textdata = WorkerThreads.ToString() };
-            threadSlot.DataContext = new TextboxText() { textdata = CompletionPortThreads.ToString() };
-            solvingSlot.DataContext = new TextboxText() { textdata = SolvingAlgorithm };
-        }
-
-        private void okClicked(object sender, RoutedEventArgs e)
-        {
-            this.Close();
-        }
+        #endregion
     }
 }

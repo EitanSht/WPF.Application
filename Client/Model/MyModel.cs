@@ -1,17 +1,19 @@
-﻿using Compression;
+﻿using Client.View;
+using Compression;
 using MazeGenerators;
+using Microsoft.Win32;
 using Search;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
-using System.IO.Compression;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace Client
 {
@@ -20,7 +22,7 @@ namespace Client
     /// </summary>
     internal class MyModel : IModel
     {
-        public event func ModelChanged;
+        public event PropertyChangedEventHandler PropertyChanged;
 
         private Dictionary<string, Maze3d> m_mazesDictionary;
         private Dictionary<string, Solution> m_solutionsDictionary;
@@ -29,42 +31,30 @@ namespace Client
         private string directoryPath = Directory.GetCurrentDirectory() + ("\\");
         private List<IStoppable> m_stoppingList = new List<IStoppable>();
         private List<string> m_instructions;
-        private bool m_initiatedStop = false;
         private Solution mCurrentSolution = new Solution();
         private bool isSolutionExists = false;
-
-        [DllImport("kernel32.dll")]
-        static extern IntPtr GetConsoleWindow();
-        [DllImport("user32.dll")]
-        static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-        const int SW_HIDE = 0;
-        const int SW_SHOW = 5;
+        private bool mFinished = false;
+        private WinMaze staticMaze;
+        private WinMaze originalWinMaze;
+        private bool isMazeExists = false;
+        private bool solExists = false;
+        private string currentMazeName = "maze";
 
         /// <summary>
         /// MyModel constructor
         /// </summary>
-        /// <param name="controller">Controller</param>
         public MyModel()
         {
             ActivateThreadPool();
-
-            unZipDictionaries(directoryPath);
-
-            if (isMazesFileExists())
-                loadMazeDictionary();
-            else
-                m_mazesDictionary = new Dictionary<string, Maze3d>();
-
-            if (isSolutionFileExists())
-                loadSolutionDictionary();
-            else
-                m_solutionsDictionary = new Dictionary<string, Solution>();
+            m_mazesDictionary = new Dictionary<string, Maze3d>();
+            m_solutionsDictionary = new Dictionary<string, Solution>();
             m_winMazesDictionary = new Dictionary<string, WinMaze>();
             m_instructions = new List<string>();
+        }
 
-            var handle = GetConsoleWindow();
-            ShowWindow(handle, SW_HIDE); // Hide
-
+        private void NotifyPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         /// <summary>
@@ -78,16 +68,6 @@ namespace Client
         }
 
         /// <summary>
-        /// Directory Command - Returns file names & paths
-        /// </summary>
-        /// <param name="path">Directory path</param>
-        /// <returns>If path exists - files & directories, if not - error message</returns>
-        public string[] getDir(string filePath)
-        {
-            return Directory.GetFileSystemEntries(filePath);
-        }
-
-        /// <summary>
         /// Generate a 3d Maze - Generates a new maze with given user input
         /// </summary>
         /// <param name="name">Maze Name</param>
@@ -95,10 +75,48 @@ namespace Client
         /// <param name="columns">How many columns to the maze</param>
         /// <param name="rows">How many rows to the maze</param>
         [STAThread]
-        public void generate3dMaze(string mazeName, int levels, int columns, int rows, int size)
+        public void generate3dMaze()
         {
-            int[] mazeDimentions = { levels, columns, rows };
-            int cellSize = size;
+            string mazeName = currentMazeName;
+            if (string.IsNullOrEmpty(LevelData))
+            {
+                ErrorOutput = ("Please insert 'Levels' value");
+                MessageBox.Show(ErrorOutput, "Error");
+                return;
+            }
+            if (string.IsNullOrEmpty(ColumnData))
+            {
+                ErrorOutput = ("Please insert 'Column' value");
+                MessageBox.Show(ErrorOutput, "Error");
+                return;
+            }
+            if (string.IsNullOrEmpty(RowData))
+            {
+                ErrorOutput = ("Please insert 'Rows' value");
+                MessageBox.Show(ErrorOutput, "Error");
+                return;
+            }
+            if (string.IsNullOrEmpty(CellSizeData))
+            {
+                ErrorOutput = ("Please insert 'Size' value");
+                MessageBox.Show(ErrorOutput, "Error");
+                return;
+            }
+            if ((Int32.Parse(LevelData) < 1) || (Int32.Parse(ColumnData) < 6) || (Int32.Parse(RowData) < 6) || (Int32.Parse(CellSizeData) < 10))
+            {
+                ErrorOutput = ("Incorrect maze input, Please insert:\n\nLevels - Above 1\nColumns - Above 6\nRows - Above 6");
+                MessageBox.Show(ErrorOutput, "Error");
+                return;
+            }
+
+            if (((Int32.Parse(CellSizeData) * Int32.Parse(ColumnData)) > 380) || ((Int32.Parse(CellSizeData) * Int32.Parse(RowData)) > 350))
+            {
+                ErrorOutput = ("Size of the maze is too large:\n\nPlease enter new dimetions\nor change the cell size");
+                MessageBox.Show(ErrorOutput, "Error");
+                return;
+            }
+            int[] mazeDimentions = { Int32.Parse(LevelData), Int32.Parse(ColumnData), Int32.Parse(RowData) };
+            int cellSize = Int32.Parse(CellSizeData);
 
             var resetEvent = new ManualResetEvent(false);
             ThreadPool.QueueUserWorkItem(new WaitCallback((state) =>
@@ -107,6 +125,63 @@ namespace Client
                 resetEvent.Set();
             }));
             resetEvent.WaitOne();
+
+            WinMaze winMaze = getWinMaze(mazeName);
+            printMaze(winMaze, winMaze.PosZ);
+        }
+
+        /// <summary>
+        /// Displays the current state of the maze in view
+        /// </summary>
+        /// <param name="winMaze">WinMaze object</param>
+        /// <param name="floor">Current floor to displays</param>
+        private void printMaze(WinMaze winMaze, int floor)
+        {
+            CurrentMazeCanvas = new Canvas();
+            SecondaryMazeCanvas = new Canvas();
+
+            if ((winMaze.PosZ == 0) && (winMaze.PosX == (winMaze.getMaze().MyColumns - 1)) &&
+                (winMaze.PosY == (winMaze.getMaze().MyRows - 1)) && !mFinished)
+            {
+                mFinished = true;
+                FinishWindow finishWindow = new FinishWindow();
+                finishWindow.Show();
+            }
+
+            staticMaze = winMaze;
+            if (solExists)
+            {
+                solExists = false;
+                winMaze = originalWinMaze;
+                winMaze.clearSolution();
+            }
+            else
+            {
+                originalWinMaze = winMaze;
+            }
+
+            MazeBoard mazeBoard = new MazeBoard(winMaze, winMaze.PosZ, winMaze.CellSize, 0);
+            CurrentMazeCanvas.Children.Add(mazeBoard);
+            Canvas.SetLeft(mazeBoard, 30);
+            Canvas.SetTop(mazeBoard, 10);
+
+            if ((winMaze.PosZ + 1) < winMaze.getMaze().MyHeight) // Upper level display
+            {
+                MazeBoard upMazeBoard = new MazeBoard(winMaze, floor, 10, 1);
+                SecondaryMazeCanvas.Children.Add(upMazeBoard);
+                Canvas.SetLeft(upMazeBoard, 0);
+                Canvas.SetTop(upMazeBoard, 30);
+            }
+
+            if ((winMaze.PosZ - 1) >= 0)
+            {
+                MazeBoard downMazeBoard = new MazeBoard(winMaze, floor, 10, -1); // Lower level display
+                SecondaryMazeCanvas.Children.Add(downMazeBoard);
+                Canvas.SetLeft(downMazeBoard, 0);
+                Canvas.SetTop(downMazeBoard, 200);
+            }
+            isMazeExists = true;
+            staticMaze = winMaze;
         }
 
         /// <summary>
@@ -126,8 +201,8 @@ namespace Client
             m_stoppingList.Remove(maze3dGenerator);
             m_solutionsDictionary.Remove("maze");
             add3dMaze("maze", currentMaze);
+            originalWinMaze = winMaze;
             isSolutionExists = false;
-            saveMazeDictionary();
         }
 
         /// <summary>
@@ -149,7 +224,6 @@ namespace Client
         /// <returns>True if successful saving the maze</returns>
         public bool saveMaze(string mazeName, string filePath)
         {
-            //MessageBox.Show("save: " + mazeName);
             WinMaze winMaze = m_currentWinMaze;
             Maze3d currentMaze = winMaze.getMaze();
             add3dMaze(mazeName, currentMaze);
@@ -166,7 +240,86 @@ namespace Client
                     outStream.Flush();
                 }
             }
+            printMaze(winMaze, winMaze.PosZ);
             return true;
+        }
+
+        /// <summary>
+        /// Displays the solution in View
+        /// </summary>
+        public void showSolution()
+        {
+            string mazeTitle = currentMazeName;
+            Solution solution = displaySolution(mazeTitle);
+            if (null == solution)
+            {
+                ErrorOutput = ("ERROR: The solution does not exist for the maze named: " + mazeTitle + ".");
+                MessageBox.Show(ErrorOutput, "Error");
+            }
+            else // soultion exists
+            {
+                List<string[]> tempList = solution.getSolutionCoordinates();
+                staticMaze.setSolutionCoordinates(tempList);
+                m_currentWinMaze.setSolutionCoordinates(tempList);
+            }
+            WinMaze winMaze = getWinMaze("maze");
+            printMaze(winMaze, winMaze.PosZ);
+        }
+
+        /// <summary>
+        /// Hides the solution in View
+        /// </summary>
+        public void hideSolution()
+        {
+            staticMaze = originalWinMaze;
+            solExists = true;
+            printMaze(staticMaze, staticMaze.PosZ);
+        }
+
+        /// <summary>
+        /// Opens the load maze dialog to the user in View
+        /// </summary>
+        public void loadClicked()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            string filePath = "";
+            string fileTitle = "";
+            if (openFileDialog.ShowDialog() == true)
+            {
+                filePath = openFileDialog.FileName;
+                fileTitle = openFileDialog.SafeFileName;
+                loadMaze(filePath.ToLower(), fileTitle);
+                isMazeExists = true;
+                solExists = false;
+            }
+        }
+
+        /// <summary>
+        /// Opens the save maze dialog to the user in View
+        /// </summary>
+        public void saveClicked()
+        {
+            if (!isMazeExists)
+            {
+                ErrorOutput = ("Please generate a maze");
+                MessageBox.Show(ErrorOutput, "Error");
+                return;
+            }
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            string filePath = "";
+            string fileTitle = "";
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                filePath = saveFileDialog.FileName;
+                fileTitle = saveFileDialog.SafeFileName;
+                filePath += ".maze";
+                currentMazeName = fileTitle;
+                if (saveMaze(fileTitle, filePath))
+                {
+                    Output = ("Maze saved successfuly\nPath: | " + filePath + " |");
+                    MessageBox.Show(Output, "Message");
+                }
+            }
         }
 
         /// <summary>
@@ -178,6 +331,7 @@ namespace Client
         public void loadMaze(string path, string mazeName)
         {
             mazeName = mazeName.Substring(0, mazeName.Length - 5);
+            currentMazeName = mazeName;
             int numberOfBytes;
             byte[] compressionArray = new byte[100];
             List<byte> compressedList = new List<byte>();
@@ -195,28 +349,12 @@ namespace Client
                 }
             }
             Maze3d loadedMaze = new Maze3d(compressedList.ToArray());
-            Console.WriteLine("name (load): " + mazeName);
             add3dMaze(mazeName, loadedMaze);
             WinMaze winMaze = new WinMaze(loadedMaze, "maze", 50);
-            //if (!winMaze.isSolutionExists())
-            //    isSolutionExists = false;
             m_currentWinMaze = winMaze;
             m_winMazesDictionary.Remove("maze");
             m_winMazesDictionary["maze"] = winMaze;
-            m_instructions.Clear();
-            m_instructions.Add("display");
-            m_instructions.Add("maze");
-        }
-
-        /// <summary>
-        /// File Size - Returns the size of the file in bytes
-        /// </summary>
-        /// <param name="Path">Directory path</param>
-        /// <returns>Size in bytes of the given file name in the disc</returns>
-        public long fileSize(string filePath)
-        {
-            FileInfo fileInformation = new FileInfo(filePath);
-            return fileInformation.Length;
+            printMaze(winMaze, winMaze.PosZ);
         }
 
         /// <summary>
@@ -225,8 +363,9 @@ namespace Client
         /// </summary>
         /// <param name="mazeName">Maze name</param>
         /// <param name="solvingAlgorithm">Solving algorithm - BFS/DFS</param>
-        public void solveMaze(string mazeName, string solvingAlgorithm)
+        public void solveMaze(string solvingAlgorithm)
         {
+            string mazeName = currentMazeName;
             ISearchingAlgorithm searchingAlgorithm = null;
             if (solvingAlgorithm == "DFS")
             {
@@ -244,7 +383,6 @@ namespace Client
             var resetEvent = new ManualResetEvent(false);
             ThreadPool.QueueUserWorkItem(new WaitCallback((state) =>
             {
-                //solve(searchingAlgorithm, mazeName);
                 solve(mazeName, solvingAlgorithm);
                 resetEvent.Set();
             }));
@@ -258,39 +396,7 @@ namespace Client
         /// <param name="mazeName">Maze name</param>
         private void solve(string mazeName, string solvingAlgorithm)
         {
-            //ISearchable maze;
-            //Solution mazeSolution;
-            //if (!solutionExists(mazeName))
-            //{
-            //    try
-            //    {
-            //        maze = new SearchableMaze3d(m_mazesDictionary[mazeName]);
-            //    }
-            //    catch (Exception)
-            //    {
-            //        return;
-            //    }
-            //    m_stoppingList.Add(searchingAlgorithm);
-            //    mazeSolution = searchingAlgorithm.Solve(maze);
-            //    m_stoppingList.Remove(searchingAlgorithm);
-            //    List<string[]> getSolutionCoordinate = mazeSolution.getSolutionCoordinates();
-            //    m_solutionsDictionary[mazeName] = mazeSolution;
-            //    mCurrentSolution = mazeSolution;
-            //    isSolutionExists = true;
-            //    saveSolutionDictionary();
-            //    saveMazeDictionary();
-            //}
-            //else // Solution exists
-            //{
-            //    MessageBox.Show(("The solution exists for the maze named: \n" + mazeName), "Solution Exists");
-            //}
-            ////////////////////////////////////////////////////////////////////////////////////
-            ////////////////////////////////////////////////////////////////////////////////////
-            ////////////////////////////////////////////////////////////////////////////////////
             CommunicateWithServer(mazeName, solvingAlgorithm);
-            ////////////////////////////////////////////////////////////////////////////////////
-            ////////////////////////////////////////////////////////////////////////////////////
-            ////////////////////////////////////////////////////////////////////////////////////
         }
 
         /// <summary>
@@ -319,18 +425,7 @@ namespace Client
         /// <returns>True/False if the maze is found</returns>
         public bool mazeExists(string mazeName)
         {
-            //MessageBox.Show("exists? " + m_mazesDictionary.ContainsKey(mazeName).ToString());
             return m_mazesDictionary.ContainsKey(mazeName);
-        }
-
-        /// <summary>
-        /// Returns true if the solution exists
-        /// </summary>
-        /// <param name="mazeName"></param>
-        /// <returns>True if the solution exists</returns>
-        public bool solutionExists(string mazeName)
-        {
-            return m_solutionsDictionary.ContainsKey(mazeName);
         }
 
         /// <summary>
@@ -339,9 +434,7 @@ namespace Client
         /// </summary>
         public void exit()
         {
-            if (!m_initiatedStop)
-                zipDictionaries(directoryPath);
-            ModelChanged();
+            Stop();
         }
 
         /// <summary>
@@ -369,197 +462,8 @@ namespace Client
         /// <param name="currentMaze">Maze</param>
         private void add3dMaze(string mazeName, Maze3d currentMaze)
         {
-            try
-            {
-                //m_solutionsDictionary.Remove("maze");
-            }
-            catch (Exception)
-            {
-                // Empty implementation
-            }
-            //MessageBox.Show("add");
             m_mazesDictionary["maze"] = currentMaze;
             m_mazesDictionary[mazeName] = currentMaze;
-        }
-
-        /// <summary>
-        /// Activates the event 'Model Changed'
-        /// </summary>
-        public void modelEvent()
-        {
-            ModelChanged();
-        }
-
-        /// <summary>
-        /// Saves the current solution to the disc
-        /// </summary>
-        public void saveSolutionDictionary()
-        {
-            BinaryFormatter formatter = new BinaryFormatter();
-
-            try
-            {
-                FileStream writerFileStream =
-                    new FileStream(directoryPath + "\\solutions.dat", FileMode.Create, FileAccess.Write);
-                formatter.Serialize(writerFileStream, m_solutionsDictionary);
-                writerFileStream.Close();
-            }
-            catch (Exception)
-            {
-                // No implementation
-            }
-        }
-
-        /// <summary>
-        /// Loads the solutions from the disc
-        /// </summary>
-        public void loadSolutionDictionary()
-        {
-            Dictionary<string, Solution> loadedSolutionFile = new Dictionary<string, Solution>();
-            BinaryFormatter formatter = new BinaryFormatter();
-
-            if (File.Exists(directoryPath + "\\solutions.dat"))
-            {
-                try
-                {
-                    FileStream readerFileStream = new FileStream(directoryPath + "\\solutions.dat", FileMode.Open, FileAccess.Read);
-                    loadedSolutionFile = (Dictionary<string, Solution>)formatter.Deserialize(readerFileStream);
-                    readerFileStream.Close();
-
-                    m_solutionsDictionary = loadedSolutionFile;
-                }
-                catch (Exception)
-                {
-                    // No implementation
-                }
-            }
-        }
-
-        /// <summary>
-        /// Saves the mazes dictionary to the disc
-        /// </summary>
-        public void saveMazeDictionary()
-        {
-            BinaryFormatter formatter = new BinaryFormatter();
-            //MessageBox.Show("save");
-            try
-            {
-                FileStream writerFileStream =
-                    new FileStream(directoryPath + "\\mazes.dat", FileMode.Create, FileAccess.Write);
-                formatter.Serialize(writerFileStream, m_mazesDictionary);
-                writerFileStream.Close();
-            }
-            catch (Exception)
-            {
-                // No implementation
-            }
-        }
-
-        /// <summary>
-        /// Loads the mazes dictionary from the disc
-        /// </summary>
-        public void loadMazeDictionary()
-        {
-            Dictionary<string, Maze3d> loadedMazesFile = new Dictionary<string, Maze3d>();
-            BinaryFormatter formatter = new BinaryFormatter();
-            if (File.Exists(directoryPath + "\\mazes.dat"))
-            {
-                try
-                {
-                    FileStream readerFileStream = new FileStream(directoryPath + "\\mazes.dat", FileMode.Open, FileAccess.Read);
-                    loadedMazesFile = (Dictionary<string, Maze3d>)formatter.Deserialize(readerFileStream);
-                    readerFileStream.Close();
-                    m_mazesDictionary = loadedMazesFile;
-                }
-                catch (Exception)
-                {
-                    // No implementation
-                }
-            }
-        }
-
-        /// <summary>
-        /// Unzips the files from the disc and creates & retrieves the dictionaries
-        /// </summary>
-        /// <param name="directoryPath">Directory path</param>
-        public void unZipDictionaries(string directoryPath)
-        {
-            DirectoryInfo directorySelected = new DirectoryInfo(directoryPath);
-            if ((File.Exists(directoryPath + "\\mazes.dat.zip")) || (File.Exists(directoryPath + "\\solutions.dat.zip")))
-                foreach (FileInfo fileToDecompress in directorySelected.GetFiles("*.dat.zip"))
-                {
-                    using (FileStream originalFileStream = fileToDecompress.OpenRead())
-                    {
-                        string currentFileName = fileToDecompress.FullName;
-                        string newFileName = currentFileName.Remove(currentFileName.Length - fileToDecompress.Extension.Length);
-
-                        using (FileStream decompressedFileStream = File.Create(newFileName))
-                        {
-                            using (GZipStream decompressionStream = new GZipStream(originalFileStream, CompressionMode.Decompress))
-                            {
-                                decompressionStream.CopyTo(decompressedFileStream);
-                            }
-                        }
-                    }
-                }
-        }
-
-        /// <summary>
-        /// Compresses (Zip) the dictionaries and saves them to the disc
-        /// </summary>
-        /// <param name="directoryPath">Directory path</param>
-        public void zipDictionaries(string directoryPath)
-        {
-            DirectoryInfo directorySelected = new DirectoryInfo(directoryPath);
-
-            foreach (FileInfo fileToCompress in directorySelected.GetFiles())
-            {
-                using (FileStream originalFileStream = fileToCompress.OpenRead())
-                {
-                    if ((File.GetAttributes(fileToCompress.FullName) &
-                       FileAttributes.Hidden) != FileAttributes.Hidden & fileToCompress.Extension == ".dat")
-                    {
-                        using (FileStream compressedFileStream = File.Create(fileToCompress.FullName + ".zip"))
-                        {
-                            using (GZipStream compressionStream = new GZipStream(compressedFileStream,
-                               CompressionMode.Compress))
-                            {
-                                originalFileStream.CopyTo(compressionStream);
-                            }
-                        }
-                        FileInfo info = new FileInfo(directoryPath + "\\" + fileToCompress.Name + ".zip");
-                    }
-                }
-            }
-
-            string[] filePaths = Directory.GetFiles(directoryPath);
-            //foreach (string filePath in filePaths)
-            //{
-            //    var name = new FileInfo(filePath).Name;
-            //    name = name.ToLower();
-            //    if ((name == "mazes.dat") || (name == "solutions.dat"))
-            //    {
-            //        File.Delete(filePath);
-            //    }
-            //}
-        }
-
-        /// <summary>
-        /// Returns true if the solution file exists
-        /// </summary>
-        /// <returns>True if the file exists</returns>
-        public bool isSolutionFileExists()
-        {
-            return File.Exists(directoryPath + "\\solutions.dat");
-        }
-
-        /// <summary>
-        /// Returns true if the mazes file exists
-        /// </summary>
-        /// <returns>True if the file exists</returns>
-        public bool isMazesFileExists()
-        {
-            return File.Exists(directoryPath + "\\mazes.dat");
         }
 
         /// <summary>
@@ -567,7 +471,6 @@ namespace Client
         /// </summary>
         public void Stop()
         {
-            m_initiatedStop = true;
             foreach (var item in m_stoppingList)
             {
                 item.Stop();
@@ -590,10 +493,9 @@ namespace Client
         /// <summary>
         /// Move left in the maze command
         /// </summary>
-        /// <param name="maze">WinMaze current maze</param>
-        public void moveLeft(WinMaze maze)
+        public void moveLeft()
         {
-            m_instructions.Clear();
+            WinMaze maze = m_winMazesDictionary["maze"];
             int[] currentCellWalls = maze.getMaze().getMazeByFloor(maze.PosZ).getCell(maze.PosX, maze.PosY).getWallsAroundCell();
             if (maze.PosX - 1 >= 0)
             {
@@ -603,9 +505,7 @@ namespace Client
                     maze.PosX -= 1;
                     m_winMazesDictionary[maze.getName()] = maze;
                     m_currentWinMaze = maze;
-                    m_instructions.Add("display");
-                    m_instructions.Add("maze");
-                    ModelChanged();
+                    printMaze(maze, maze.PosZ);
                 }
             }
         }
@@ -613,10 +513,9 @@ namespace Client
         /// <summary>
         /// Move right in the maze command
         /// </summary>
-        /// <param name="maze">WinMaze current maze</param>
-        public void moveRight(WinMaze maze)
+        public void moveRight()
         {
-            m_instructions.Clear();
+            WinMaze maze = m_winMazesDictionary["maze"];
             int[] currentCellWalls = maze.getMaze().getMazeByFloor(maze.PosZ).getCell(maze.PosX, maze.PosY).getWallsAroundCell();
             if (maze.PosX + 1 < maze.getMaze().MyColumns)
             {
@@ -625,9 +524,7 @@ namespace Client
                     maze.PosX += 1;
                     m_winMazesDictionary[maze.getName()] = maze;
                     m_currentWinMaze = maze;
-                    m_instructions.Add("display");
-                    m_instructions.Add("maze");
-                    ModelChanged();
+                    printMaze(maze, maze.PosZ);
                 }
             }
         }
@@ -635,10 +532,9 @@ namespace Client
         /// <summary>
         /// Move back in the maze command
         /// </summary>
-        /// <param name="maze">WinMaze current maze</param>
-        public void moveBack(WinMaze maze)
+        public void moveBack()
         {
-            m_instructions.Clear();
+            WinMaze maze = m_winMazesDictionary["maze"];
             int[] currentCellWalls = maze.getMaze().getMazeByFloor(maze.PosZ).getCell(maze.PosX, maze.PosY).getWallsAroundCell();
             if (maze.PosY - 1 >= 0)
             {
@@ -648,9 +544,7 @@ namespace Client
                     maze.PosY -= 1;
                     m_winMazesDictionary[maze.getName()] = maze;
                     m_currentWinMaze = maze;
-                    m_instructions.Add("display");
-                    m_instructions.Add("maze");
-                    ModelChanged();
+                    printMaze(maze, maze.PosZ);
                 }
             }
         }
@@ -658,10 +552,9 @@ namespace Client
         /// <summary>
         /// Move forward in the maze command
         /// </summary>
-        /// <param name="maze">WinMaze current maze</param>
-        public void moveForward(WinMaze maze)
+        public void moveForward()
         {
-            m_instructions.Clear();
+            WinMaze maze = m_winMazesDictionary["maze"];
             int[] currentCellWalls = maze.getMaze().getMazeByFloor(maze.PosZ).getCell(maze.PosX, maze.PosY).getWallsAroundCell();
             if (maze.PosY + 1 < maze.getMaze().MyRows)
             {
@@ -670,9 +563,7 @@ namespace Client
                     maze.PosY += 1;
                     m_winMazesDictionary[maze.getName()] = maze;
                     m_currentWinMaze = maze;
-                    m_instructions.Add("display");
-                    m_instructions.Add("maze");
-                    ModelChanged();
+                    printMaze(maze, maze.PosZ);
                 }
             }
         }
@@ -680,10 +571,9 @@ namespace Client
         /// <summary>
         /// Move down in the maze command
         /// </summary>
-        /// <param name="maze">WinMaze current maze</param>
-        public void moveDown(WinMaze maze)
+        public void moveDown()
         {
-            m_instructions.Clear();
+            WinMaze maze = m_winMazesDictionary["maze"];
             if (maze.PosZ - 1 >= 0)
             {
                 int isBrockBelow = maze.getMaze().getMazeByFloor(maze.PosZ - 1).getCell(maze.PosX, maze.PosY).BlockOrEmpty;
@@ -692,9 +582,7 @@ namespace Client
                     maze.PosZ -= 1;
                     m_winMazesDictionary[maze.getName()] = maze;
                     m_currentWinMaze = maze;
-                    m_instructions.Add("display");
-                    m_instructions.Add("maze");
-                    ModelChanged();
+                    printMaze(maze, maze.PosZ);
                 }
             }
         }
@@ -702,10 +590,9 @@ namespace Client
         /// <summary>
         /// Move up in the maze command
         /// </summary>
-        /// <param name="maze">WinMaze current maze</param>
-        public void moveUp(WinMaze maze)
+        public void moveUp()
         {
-            m_instructions.Clear();
+            WinMaze maze = m_winMazesDictionary["maze"];
             if ((maze.PosZ + 1) < maze.getMaze().MyHeight)
             {
                 int isBrockAbove = maze.getMaze().getMazeByFloor(maze.PosZ + 1).getCell(maze.PosX, maze.PosY).BlockOrEmpty;
@@ -714,30 +601,20 @@ namespace Client
                     maze.PosZ += 1;
                     m_winMazesDictionary[maze.getName()] = maze;
                     m_currentWinMaze = maze;
-                    m_instructions.Add("display");
-                    m_instructions.Add("maze");
-                    ModelChanged();
+                    printMaze(maze, maze.PosZ);
                 }
             }
         }
 
         /// <summary>
-        /// Returns the current instructions
+        /// Responsible of communicating with the server
         /// </summary>
-        /// <returns>String array of instructions</returns>
-        public string[] getInstructions()
-        {
-            return m_instructions.ToArray();
-        }
-
+        /// <param name="mazeName">Name of the maze</param>
+        /// <param name="solvingAlgorithm">Solving Algorithm</param>
         private void CommunicateWithServer(string mazeName, string solvingAlgorithm)
         {
-            var handle = GetConsoleWindow();
-            ShowWindow(handle, SW_SHOW); // Show
-
-
-            Console.WriteLine("Client CLI started!\n");
-            Console.WriteLine("Searching for the maze named: " + mazeName + "\nWith the searching algorithm: " + solvingAlgorithm);
+            Output = ("Searching for the maze named: " + mazeName + "\nWith the searching algorithm: " + solvingAlgorithm);
+            MessageBox.Show(Output, "Message");
 
             int port = 5400;
             String serverIP = "127.0.0.1";
@@ -745,15 +622,10 @@ namespace Client
             {
                 IFormatter binaryFormatter = new BinaryFormatter();
 
-                //string command;
-                //do
-                //{
                 Object[] arrayToSend = new object[3];
                 arrayToSend[0] = m_mazesDictionary[mazeName];
                 arrayToSend[1] = mazeName;
                 arrayToSend[2] = solvingAlgorithm;
-
-                Console.Write("Client >> ");
 
                 Object[] receivedArray = new object[2];
 
@@ -761,58 +633,103 @@ namespace Client
                 {
                     using (NetworkStream clientStream = client.GetStream())
                     {
-                        binaryFormatter.Serialize(clientStream, arrayToSend); //Client -> Server (Serialize object to a given stream)
+                        binaryFormatter.Serialize(clientStream, arrayToSend);
                         receivedArray = (Object[])binaryFormatter.Deserialize(clientStream);
                     }
                 }
-                //////
                 Solution receivedSolution = (Solution)receivedArray[0];
                 bool wasTheMazeSolved = (bool)receivedArray[1];
-                //////
                 m_solutionsDictionary[mazeName] = receivedSolution;
                 mCurrentSolution = receivedSolution;
                 isSolutionExists = true;
 
-                Console.WriteLine(receivedSolution.GetSolutionPathByString());
-                Console.WriteLine("\nWas it solved before: " + wasTheMazeSolved);
-
-
-                //} while (!command.Equals("exit"));
+                Output = ("Received a solution from server." + "\nWas it taken from the cache: " + wasTheMazeSolved);
+                MessageBox.Show(Output, "Message");
             }
             catch (Exception e)
             {
-                Console.WriteLine("Error communicating with server at: {0}. Exception: {1}", serverIP, e.Message);
+                ErrorOutput = ("Error communicating with server at: " + serverIP + ". Exception: " + e.Message);
+                MessageBox.Show(ErrorOutput, "Error");
             }
-
-            //ISearchable maze;
-            //Solution mazeSolution;
-            //if (!solutionExists(mazeName))
-            //{
-            //    try
-            //    {
-            //        maze = new SearchableMaze3d(m_mazesDictionary[mazeName]);
-            //    }
-            //    catch (Exception)
-            //    {
-            //        return;
-            //    }
-            //    m_stoppingList.Add(searchingAlgorithm);
-
-            //    mazeSolution = searchingAlgorithm.Solve(maze);
-
-            //    m_stoppingList.Remove(searchingAlgorithm);
-            //    List<string[]> getSolutionCoordinate = mazeSolution.getSolutionCoordinates();
-            //    m_solutionsDictionary[mazeName] = mazeSolution;
-            //    mCurrentSolution = mazeSolution;
-            //    isSolutionExists = true;
-            //    saveSolutionDictionary();
-            //    saveMazeDictionary();
-            //}
-            //else // Solution exists
-            //{
-            //    MessageBox.Show(("The solution exists for the maze named: \n" + mazeName), "Solution Exists");
-            //}
-
         }
+
+        /// <summary>
+        /// Creates a new maze display
+        /// </summary>
+        public void newCanvas()
+        {
+            isSolutionExists = false;
+            isMazeExists = false;
+            CurrentMazeCanvas = new Canvas();
+            SecondaryMazeCanvas = new Canvas();
+        }
+
+        #region Properties
+
+        private string mLevelData = "3";
+
+        public string LevelData
+        {
+            get { return mLevelData; }
+            set { mLevelData = value; NotifyPropertyChanged("LevelData"); }
+        }
+
+        private string mColumnData = "6";
+
+        public string ColumnData
+        {
+            get { return mColumnData; }
+            set { mColumnData = value; NotifyPropertyChanged("ColumnData"); }
+        }
+
+        private string mRowData = "6";
+
+        public string RowData
+        {
+            get { return mRowData; }
+            set { mRowData = value; NotifyPropertyChanged("RowData"); }
+        }
+
+        private string mCellSizeData = "50";
+
+        public string CellSizeData
+        {
+            get { return mCellSizeData; }
+            set { mCellSizeData = value; NotifyPropertyChanged("CellSizeData"); }
+        }
+
+        private Canvas mCurrentCanvas;
+
+        public Canvas CurrentMazeCanvas
+        {
+            get { return mCurrentCanvas; }
+            set { mCurrentCanvas = value; NotifyPropertyChanged("CurrentMazeCanvas"); }
+        }
+
+        private Canvas mSecondaryMazeCanvas;
+
+        public Canvas SecondaryMazeCanvas
+        {
+            get { return mSecondaryMazeCanvas; }
+            set { mSecondaryMazeCanvas = value; NotifyPropertyChanged("SecondaryMazeCanvas"); }
+        }
+
+        private string mOutput;
+
+        public string Output
+        {
+            get { return mOutput; }
+            set { mOutput = value; NotifyPropertyChanged("Output"); }
+        }
+
+        private string mErrorOutput;
+
+        public string ErrorOutput
+        {
+            get { return mErrorOutput; }
+            set { mErrorOutput = value; NotifyPropertyChanged("ErrorOutput"); }
+        }
+
+        #endregion Properties
     }
 }

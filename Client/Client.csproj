@@ -53,22 +53,6 @@
     <Compile Include="Model\IModel.cs" />
     <Compile Include="Model\MyModel.cs" />
     <Compile Include="Model\WinMaze.cs" />
-    <Compile Include="Presenter\ACommand.cs" />
-    <Compile Include="Presenter\CommandList\DisplayMazeCommand.cs" />
-    <Compile Include="Presenter\CommandList\DisplaySolutionCommand.cs" />
-    <Compile Include="Presenter\CommandList\ExitCommand.cs" />
-    <Compile Include="Presenter\CommandList\Generate3dMazeCommand.cs" />
-    <Compile Include="Presenter\CommandList\LoadMazeCommand.cs" />
-    <Compile Include="Presenter\CommandList\MoveBackCommand.cs" />
-    <Compile Include="Presenter\CommandList\MoveDownCommand.cs" />
-    <Compile Include="Presenter\CommandList\MoveForwardCommand.cs" />
-    <Compile Include="Presenter\CommandList\MoveLeftCommand.cs" />
-    <Compile Include="Presenter\CommandList\MoveRightCommand.cs" />
-    <Compile Include="Presenter\CommandList\MoveUpCommand.cs" />
-    <Compile Include="Presenter\CommandList\SaveMazeCommand.cs" />
-    <Compile Include="Presenter\CommandList\SolveMazeCommand.cs" />
-    <Compile Include="Presenter\ICommand.cs" />
-    <Compile Include="Presenter\MyPresenter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <DependentUpon>Resources.resx</DependentUpon>
@@ -80,6 +64,7 @@
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="ViewModel\MyViewModel.cs" />
     <Compile Include="View\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>

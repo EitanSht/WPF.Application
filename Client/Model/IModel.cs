@@ -1,26 +1,17 @@
 ﻿using MazeGenerators;
 using Search;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Windows.Controls;
 
 namespace Client
 {
-    internal delegate void func();
-
     /// <summary>
     /// Interface that will be implemented in order to use the Model
     /// as part of the MVP module
     /// </summary>
-    internal interface IModel
+    internal interface IModel : INotifyPropertyChanged
     {
-        event func ModelChanged;
-
-        /// <summary>
-        /// Directory Command - Returns file names & paths
-        /// </summary>
-        /// <param name="path">Directory path</param>
-        /// <returns>If path exists - files & directories, if not - error message</returns>
-        string[] getDir(string path);
-
         /// <summary>
         /// Generate a 3d Maze - Generates a new maze with given user input
         /// </summary>
@@ -28,7 +19,7 @@ namespace Client
         /// <param name="levels">How many levels to the maze</param>
         /// <param name="columns">How many columns to the maze</param>
         /// <param name="rows">How many rows to the maze</param>
-        void generate3dMaze(string name, int levels, int columns, int rows, int size);
+        void generate3dMaze();
 
         /// <summary>
         /// Returns an existing maze by its name
@@ -55,19 +46,12 @@ namespace Client
         void loadMaze(string path, string mazeName);
 
         /// <summary>
-        /// File Size - Returns the size of the file in bytes
-        /// </summary>
-        /// <param name="Path">Directory path</param>
-        /// <returns>Size in bytes of the given file name in the disc</returns>
-        long fileSize(string Path);
-
-        /// <summary>
         /// Solve Maze - Solves the given maze with a given
         /// solving algorithm - BFS/DFS
         /// </summary>
         /// <param name="mazeName">Maze name</param>
         /// <param name="solvingAlgorithm">Solving algorithm - BFS/DFS</param>
-        void solveMaze(string mazeName, string solvingAlgorithm);
+        void solveMaze(string solvingAlgorithm);
 
         /// <summary>
         /// Display Solution - Displays the solution of the command
@@ -84,66 +68,10 @@ namespace Client
         bool mazeExists(string mazeName);
 
         /// <summary>
-        /// Returns true if there is a solution for the current maze
-        /// </summary>
-        /// <param name="mazeName">Maze name</param>
-        /// <returns>True if solution exists</returns>
-        bool solutionExists(string mazeName);
-
-        /// <summary>
-        /// Saves the current solution to the disk
-        /// </summary>
-        void saveSolutionDictionary();
-
-        /// <summary>
-        /// Loads the solutions of previous mazes from the disc
-        /// </summary>
-        void loadSolutionDictionary();
-
-        /// <summary>
-        /// Checks if the solution file exists
-        /// </summary>
-        /// <returns>True if the soultion file exists</returns>
-        bool isSolutionFileExists();
-
-        /// <summary>
-        /// Saves the maze into the disc
-        /// </summary>
-        void saveMazeDictionary();
-
-        /// <summary>
-        /// Loads all previous mazes
-        /// </summary>
-        void loadMazeDictionary();
-
-        /// <summary>
-        /// Checks if the mazes file exits
-        /// </summary>
-        /// <returns>True if the mazes file exists</returns>
-        bool isMazesFileExists();
-
-        /// <summary>
-        /// Unzips the compressed mazes file
-        /// </summary>
-        /// <param name="directoryPath">Path of the maze dictionary</param>
-        void unZipDictionaries(string directoryPath);
-
-        /// <summary>
-        /// Compresses (Zip) the current dictionary
-        /// </summary>
-        /// <param name="directoryPath">Path of the maze dictionary</param>
-        void zipDictionaries(string directoryPath);
-
-        /// <summary>
         /// Exit - Quits the program safely & closes
         /// all open thread and processes
         /// </summary>
         void exit();
-
-        /// <summary>
-        /// Creates a 'Model Changed' event
-        /// </summary>
-        void modelEvent();
 
         /// <summary>
         /// Stops safely all running threads
@@ -161,42 +89,72 @@ namespace Client
         /// Move left in the maze command
         /// </summary>
         /// <param name="maze">Current WinMaze maze</param>
-        void moveLeft(WinMaze maze);
+        void moveLeft();
 
         /// <summary>
         /// Move right in the maze command
         /// </summary>
         /// <param name="maze">Current WinMaze maze</param>
-        void moveRight(WinMaze maze);
+        void moveRight();
 
         /// <summary>
         /// Move back in the maze command
         /// </summary>
         /// <param name="maze">Current WinMaze maze</param>
-        void moveBack(WinMaze maze);
+        void moveBack();
 
         /// <summary>
         /// Move forward in the maze command
         /// </summary>
         /// <param name="maze">Current WinMaze maze</param>
-        void moveForward(WinMaze maze);
+        void moveForward();
 
         /// <summary>
         /// Move down in the maze command
         /// </summary>
         /// <param name="maze">Current WinMaze maze</param>
-        void moveDown(WinMaze maze);
+        void moveDown();
 
         /// <summary>
         /// Move up in the maze command
         /// </summary>
         /// <param name="maze">Current WinMaze maze</param>
-        void moveUp(WinMaze maze);
+        void moveUp();
 
         /// <summary>
-        /// Returns the current instructions from the Model
+        /// Transfered from View-Model: To display the solution
         /// </summary>
-        /// <returns>String array of instructions</returns>
-        string[] getInstructions();
+        void showSolution();
+
+        /// <summary>
+        /// Transfered from View-Model: To hide the solution
+        /// </summary>
+        void hideSolution();
+
+        /// <summary>
+        /// Transfered from View-Model: To create a new maze
+        /// </summary>
+        void newCanvas();
+
+        /// <summary>
+        /// Transfered from View-Model: To load a maze
+        /// </summary>
+        void loadClicked();
+
+        /// <summary>
+        /// Transfered from View-Model: To save a maze
+        /// </summary>
+        void saveClicked();
+
+        #region Properties Decleration
+        string LevelData { get; set; }
+        string ColumnData { get; set; }
+        string RowData { get; set; }
+        string CellSizeData { get; set; }
+        Canvas CurrentMazeCanvas { get; set; }
+        Canvas SecondaryMazeCanvas { get; set; }
+        string Output { get; set; }
+        string ErrorOutput { get; set; }
+        #endregion
     }
 }
